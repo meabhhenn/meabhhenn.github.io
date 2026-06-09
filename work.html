@@ -1,0 +1,194 @@
+<!--
+  WORK PAGE (work.html) — linked from the menu and the landing's "View work" button.
+  ----------------------------------------------------------------------
+  Each project is a CARD. Edit the text in your own words, set the tags,
+  and point the "View code" links at your GitHub repos (or a demo video).
+  Add or remove cards by copying a <article class="card"> block.
+
+  Links here assume index.html, work.html, and cv.pdf live in the same folder.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Work and projects by Meabh Hennessy.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='7' fill='%231fbf3a'/></svg>">
+<title>Work — Meabh Hennessy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f9faf8; --ink:#16181b; --slate:#565c63; --faint:#8a9097;
+    --line:#e3e5e1; --accent:#2b4a7a; --black:#0e0f12; --neon:#1fbf3a;
+    --display:"Schibsted Grotesk", system-ui, sans-serif;
+    --body:"Inter", system-ui, sans-serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ background:var(--bg); color:var(--ink); font-family:var(--body); line-height:1.65; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  a{ color:inherit; }
+  html{ scroll-behavior:smooth; }
+  a:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:2px; }
+  @media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto; } }
+  .wrap{ max-width:760px; width:100%; margin:0 auto; padding:0 32px; position:relative; z-index:2; }
+
+  /* menu */
+  .topnav{ border-bottom:1px solid var(--line); }
+  .nav-inner{ display:flex; align-items:center; justify-content:space-between; padding-top:22px; padding-bottom:22px; gap:18px; }
+  .brand{ font-family:var(--display); font-weight:600; font-size:1rem; letter-spacing:-.01em; text-decoration:none; }
+  .topnav nav{ display:flex; gap:26px; }
+  .topnav nav a{ font-size:.84rem; color:var(--slate); text-decoration:none; letter-spacing:.03em; transition:color .15s ease; }
+  .topnav nav a:hover{ color:var(--accent); }
+  .topnav nav a[aria-current]{ color:var(--ink); }
+
+  /* page head */
+  .page-head{ padding:64px 0 40px; }
+  .page-head .eyebrow{ font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); margin-bottom:18px; }
+  .page-head h1{ font-family:var(--display); font-weight:600; font-size:clamp(2.1rem,6vw,3rem); letter-spacing:-.025em; margin-bottom:16px; }
+  .page-head p{ color:var(--slate); max-width:52ch; }
+
+  /* cards */
+  .cards{ display:grid; grid-template-columns:1fr; gap:18px; padding-bottom:72px; }
+  .card{
+    border:1px solid var(--line); border-radius:6px; background:#fff;
+    padding:26px 28px; transition:border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover{ border-color:var(--neon); transform:translateY(-2px); box-shadow:0 6px 22px rgba(16,18,21,.06); }
+  .card .tag{ font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--neon); font-weight:500; }
+  .card h3{ font-family:var(--display); font-weight:600; font-size:1.35rem; letter-spacing:-.01em; margin:8px 0 6px; }
+  .card p{ color:var(--slate); }
+  .stack{ display:flex; flex-wrap:wrap; gap:7px; margin-top:14px; }
+  .stack span{ font-size:.72rem; color:var(--slate); border:1px solid var(--line); border-radius:3px; padding:3px 9px; }
+  .card .links{ margin-top:14px; }
+  .card .links a{ font-size:.84rem; color:var(--accent); text-decoration:none; border-bottom:1px solid transparent; transition:border-color .15s ease; }
+  .card .links a:hover{ border-bottom-color:var(--accent); }
+
+  /* contact band */
+  footer{ background:var(--black); color:var(--bg); }
+  footer .wrap{ padding-top:46px; padding-bottom:46px; display:flex; align-items:baseline; gap:14px 26px; flex-wrap:wrap; }
+  .contact-label{ font-family:var(--display); font-weight:500; font-size:1.05rem; color:var(--bg); margin-right:6px; }
+  footer a{ font-size:.95rem; color:#d7dad6; text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px; transition:color .15s ease, border-color .15s ease; }
+  footer a:hover{ color:var(--neon); border-bottom-color:var(--neon); }
+
+  /* easter egg */
+  .spark{ position:absolute; width:14px; height:14px; border-radius:50%; background:var(--neon); border:none; padding:0; cursor:pointer; box-shadow:0 0 11px rgba(31,191,58,.6); z-index:5; transition:box-shadow .15s ease; }
+  .spark:hover, .spark:focus-visible{ box-shadow:0 0 18px rgba(31,191,58,.9); outline:none; }
+  .shard{ position:fixed; left:0; top:0; width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent; border-bottom:17px solid var(--neon); z-index:6; pointer-events:none; filter:drop-shadow(0 0 5px rgba(31,191,58,.55)); will-change:transform, opacity; }
+
+  @media (min-width:640px){ .cards{ grid-template-columns:1fr 1fr; } }
+</style>
+</head>
+<body>
+  <header class="topnav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="index.html">Meabh Hennessy</a>
+      <nav>
+        <a href="index.html#about">About</a>
+        <a href="work.html" aria-current="page">Work</a>
+        <a href="[cv.pdf]" target="_blank" rel="noopener">CV</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-head">
+      <div class="wrap">
+        <p class="eyebrow">Work</p>
+        <h1>Research &amp; projects</h1>
+        <p>[Optional one-line intro to your work — or delete this line.]</p>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="cards">
+
+        <article class="card">
+          <span class="tag">Research · Summer 2026</span>
+          <h3>Chromosome-size modeling</h3>
+          <p>Replicating a chromosome-size experiment in Dr. Yu's lab and applying those models to new datasets.</p>
+          <div class="stack"><span>Modeling</span><span>Data analysis</span></div>
+        </article>
+
+        <article class="card">
+          <span class="tag">Personal · In progress</span>
+          <h3>Wearable activity detection</h3>
+          <p>Training a model on my own smartwatch data to detect daily activities from raw sensor signals.</p>
+          <div class="stack"><span>Machine learning</span><span>Time-series</span></div>
+        </article>
+
+        <article class="card">
+          <span class="tag">Python · 15-112</span>
+          <h3>Room Rescue</h3>
+          <p>A room-tidying puzzle game with drag-and-drop items and hidden objects, backed by a backtracking solver that checks whether the room can still be fully tidied from the current state.</p>
+          <div class="stack"><span>Python</span><span>Algorithms</span><span>OOP</span></div>
+          <div class="links"><a href="[link to code or demo]">View code →</a></div>
+        </article>
+
+        <article class="card">
+          <span class="tag">Python · 15-112</span>
+          <h3>Tetris</h3>
+          <p>A Tetris implementation built from scratch.</p>
+          <div class="stack"><span>Python</span><span>Game logic</span></div>
+          <div class="links"><a href="[link to code or demo]">View code →</a></div>
+        </article>
+
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span class="contact-label">Contact me:</span>
+      <a href="mailto:[you@email.com]">[you@email.com]</a>
+      <a href="[https://github.com/you]">GitHub</a>
+      <a href="[https://linkedin.com/in/you]">LinkedIn</a>
+    </div>
+  </footer>
+
+<script>
+(function(){
+  const COUNT=5, SIZE=14, PAD=14;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let circles=[];
+  function avoidRects(){
+    const sx=window.scrollX||0, sy=window.scrollY||0, rects=[];
+    document.querySelectorAll('.brand, .topnav nav a, .page-head .eyebrow, .page-head h1, .page-head p, .card, .contact-label, footer a')
+      .forEach(el=>{ const r=el.getBoundingClientRect(); rects.push({l:r.left+sx-PAD,t:r.top+sy-PAD,r:r.right+sx+PAD,b:r.bottom+sy+PAD}); });
+    return rects;
+  }
+  function clear(x,y,rects){ return !rects.some(R => !(x+SIZE<R.l||x>R.r||y+SIZE<R.t||y>R.b)); }
+  function place(el,rects){
+    const m=26, W=document.documentElement.clientWidth, H=Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    const maxX=W-m*2-SIZE, maxY=H-m*2-SIZE;
+    for(let i=0;i<350;i++){ const x=m+Math.random()*maxX, y=m+Math.random()*maxY; if(clear(x,y,rects)){ el.style.left=x+'px'; el.style.top=y+'px'; el.style.display=''; return true; } }
+    el.style.display='none'; return false;
+  }
+  function burst(circle){
+    const r=circle.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2;
+    circle.remove(); circles=circles.filter(c=>c!==circle);
+    if(reduce) return;
+    for(let i=0;i<7;i++){
+      const t=document.createElement('div'); t.className='shard'; document.body.appendChild(t);
+      const angle=(i/7)*Math.PI*2, speed=2.8+Math.random()*1.8;
+      let x=cx,y=cy, vx=Math.cos(angle)*speed, vy=Math.sin(angle)*speed-0.4;
+      const gravity=0.22, spin=(Math.random()-.5)*10; let rot=0;
+      const start=performance.now(), LIFE=190;
+      (function frame(now){ const p=(now-start)/LIFE; vy+=gravity; x+=vx; y+=vy; rot+=spin;
+        t.style.transform=`translate(${x}px, ${y}px) translate(-50%,-50%) rotate(${rot}deg)`;
+        t.style.opacity=Math.max(0,1-p);
+        if(p<1) requestAnimationFrame(frame); else t.remove();
+      })(start);
+    }
+  }
+  function spawn(){
+    circles.forEach(c=>c.remove()); circles=[];
+    const rects=avoidRects();
+    for(let i=0;i<COUNT;i++){ const c=document.createElement('button'); c.className='spark'; c.setAttribute('aria-label','A little something to click'); c.addEventListener('click',()=>burst(c)); document.body.appendChild(c); place(c,rects); circles.push(c); }
+  }
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(spawn); else window.addEventListener('load',spawn);
+  let tmr; window.addEventListener('resize',()=>{ clearTimeout(tmr); tmr=setTimeout(()=>{ const rects=avoidRects(); circles=circles.filter(c=>document.body.contains(c)); circles.forEach(c=>place(c,rects)); },150); });
+})();
+</script>
+</body>
+</html>

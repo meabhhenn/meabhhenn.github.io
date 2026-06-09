@@ -1,0 +1,269 @@
+<!--
+  LANDING PAGE (index.html) — served first by GitHub Pages.
+  ----------------------------------------------------------------------
+  STILL TO FILL IN (search for "[" ):
+    - [Year]              -> optional, e.g. "Third-year"  (delete if unwanted)
+    - [hero line ...]     -> one line in your own words
+    - [About ...]         -> a paragraph or two about you
+    - [you@email.com] / GitHub / LinkedIn links
+    - [cv.pdf]            -> add your CV file to the repo, then this link works
+
+  ADD YOUR PHOTO: in the About section, find the .photo box and replace it with:
+      <div class="photo"><img src="me.jpg" alt="Meabh Hennessy"></div>
+  (drop me.jpg into the same repo folder)
+
+  EASTER EGG: 5 deep-green circles in open space. Click -> gentle burst of 7
+  triangles that fade early. Tweak: LIFE (fade time), gravity, --neon.
+
+  PUBLISH:
+    repo named  yourusername.github.io  ->  this file as index.html
+    ->  Settings > Pages > enable  ->  live at https://yourusername.github.io
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Meabh Hennessy — Statistics & Machine Learning student at Carnegie Mellon University.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='7' fill='%231fbf3a'/></svg>">
+<title>Meabh Hennessy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:     #f9faf8;
+    --ink:    #16181b;
+    --slate:  #565c63;
+    --faint:  #8a9097;
+    --line:   #e3e5e1;
+    --accent: #2b4a7a;
+    --black:  #0e0f12;
+    --neon:   #1fbf3a;
+
+    --display: "Schibsted Grotesk", system-ui, sans-serif;
+    --body:    "Inter", system-ui, sans-serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:var(--body); line-height:1.65;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  a{ color:inherit; }
+  html{ scroll-behavior:smooth; }
+  a:focus-visible, .cta:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:2px; }
+  @media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto; } }
+  .wrap{ max-width:760px; width:100%; margin:0 auto; padding:0 32px; position:relative; z-index:2; }
+
+  /* ---- top menu ---- */
+  .topnav{ border-bottom:1px solid var(--line); }
+  .nav-inner{ display:flex; align-items:center; justify-content:space-between; padding-top:22px; padding-bottom:22px; gap:18px; }
+  .brand{ font-family:var(--display); font-weight:600; font-size:1rem; letter-spacing:-.01em; text-decoration:none; }
+  .topnav nav{ display:flex; gap:26px; }
+  .topnav nav a{ font-size:.84rem; color:var(--slate); text-decoration:none; letter-spacing:.03em; transition:color .15s ease; }
+  .topnav nav a:hover{ color:var(--accent); }
+
+  /* ---- hero ---- */
+  .hero{ min-height:68vh; display:flex; flex-direction:column; justify-content:center; padding-top:48px; padding-bottom:40px; }
+  .kicker{ font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); margin-bottom:26px; }
+  h1{
+    font-family:var(--display); font-weight:600;
+    font-size:clamp(2.6rem, 8vw, 4.2rem); line-height:1.02;
+    letter-spacing:-.03em; margin-bottom:26px;
+  }
+  .lede{ font-size:clamp(1.05rem, 2.4vw, 1.25rem); color:var(--slate); max-width:46ch; margin-bottom:44px; }
+  .cta{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:var(--display); font-weight:500; font-size:1rem;
+    text-decoration:none; color:var(--bg); background:var(--ink);
+    padding:14px 26px; border-radius:3px; align-self:flex-start;
+    transition:background .18s ease, transform .18s ease;
+  }
+  .cta:hover{ background:var(--accent); transform:translateY(-1px); }
+  .cta .arrow{ transition:transform .18s ease; }
+  .cta:hover .arrow{ transform:translateX(3px); }
+
+  /* ---- about + photo ---- */
+  .about{ padding:48px 0 72px; border-top:1px solid var(--line); }
+  .eyebrow{ font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); margin-bottom:24px; }
+  .about-grid{ display:flex; gap:36px; align-items:flex-start; flex-wrap:wrap; }
+  .photo{
+    width:200px; height:240px; flex:none; overflow:hidden;
+    border-radius:4px; background:#eceee9; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--faint); font-size:.78rem; letter-spacing:.04em;
+  }
+  .photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .about-text{ flex:1; min-width:260px; }
+  .about-text p{ font-size:1.05rem; max-width:52ch; }
+  .about-text p + p{ margin-top:16px; }
+
+  /* ---- black contact band ---- */
+  footer{ background:var(--black); color:var(--bg); }
+  footer .wrap{ padding-top:46px; padding-bottom:46px; display:flex; align-items:baseline; gap:14px 26px; flex-wrap:wrap; }
+  .contact-label{ font-family:var(--display); font-weight:500; font-size:1.05rem; color:var(--bg); margin-right:6px; }
+  footer a{ font-size:.95rem; color:#d7dad6; text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px; transition:color .15s ease, border-color .15s ease; }
+  footer a:hover{ color:var(--neon); border-bottom-color:var(--neon); }
+
+  /* ---- neon easter egg ---- */
+  .spark{
+    position:absolute; width:14px; height:14px; border-radius:50%;
+    background:var(--neon); border:none; padding:0; cursor:pointer;
+    box-shadow:0 0 11px rgba(31,191,58,.6); z-index:5; transition:box-shadow .15s ease;
+  }
+  .spark:hover, .spark:focus-visible{ box-shadow:0 0 18px rgba(31,191,58,.9); outline:none; }
+  .shard{
+    position:fixed; left:0; top:0; width:0; height:0;
+    border-left:8px solid transparent; border-right:8px solid transparent;
+    border-bottom:17px solid var(--neon);
+    z-index:6; pointer-events:none;
+    filter:drop-shadow(0 0 5px rgba(31,191,58,.55)); will-change:transform, opacity;
+  }
+</style>
+</head>
+<body>
+  <header class="topnav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="index.html">Meabh Hennessy</a>
+      <nav>
+        <a href="#about">About</a>
+        <a href="work.html">Work</a>
+        <a href="[cv.pdf]" target="_blank" rel="noopener">CV</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <p class="kicker">[Year] · Statistics &amp; Machine Learning · Carnegie Mellon</p>
+        <h1>Meabh Hennessy</h1>
+        <p class="lede">[One line in your own words — what you study, what you work on, or what you're after.]</p>
+        <a class="cta" href="work.html">View work <span class="arrow">→</span></a>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <div class="wrap">
+        <h2 class="eyebrow">About</h2>
+        <div class="about-grid">
+          <!-- PHOTO: replace the line below with <div class="photo"><img src="me.jpg" alt="Meabh Hennessy"></div> -->
+          <div class="photo">Your photo</div>
+          <div class="about-text">
+            <p>[A short paragraph about you — your interests, your focus within statistics and machine learning, what you're working toward.]</p>
+            <p>[Optional second paragraph — anything outside coursework, or what you're looking for right now.]</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span class="contact-label">Contact me:</span>
+      <a href="mailto:[you@email.com]">[you@email.com]</a>
+      <a href="[https://github.com/you]">GitHub</a>
+      <a href="[https://linkedin.com/in/you]">LinkedIn</a>
+    </div>
+  </footer>
+
+<script>
+(function(){
+  const COUNT  = 5;
+  const SIZE   = 14;
+  const PAD    = 14;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let circles  = [];
+
+  function avoidRects(){
+    const sx = window.scrollX || 0, sy = window.scrollY || 0, rects = [];
+    document.querySelectorAll('.brand, .topnav nav a, .kicker, h1, .lede, .cta, .about .eyebrow, .photo, .about-text p, .contact-label, footer a')
+      .forEach(el=>{
+        const r = el.getBoundingClientRect();
+        rects.push({l:r.left+sx-PAD, t:r.top+sy-PAD, r:r.right+sx+PAD, b:r.bottom+sy+PAD});
+      });
+    return rects;
+  }
+  function clear(x, y, rects){
+    return !rects.some(R => !(x+SIZE < R.l || x > R.r || y+SIZE < R.t || y > R.b));
+  }
+  function place(el, rects){
+    const m = 26;
+    const W = document.documentElement.clientWidth;
+    const H = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    const maxX = W - m*2 - SIZE, maxY = H - m*2 - SIZE;
+    for (let i = 0; i < 350; i++){
+      const x = m + Math.random() * maxX;
+      const y = m + Math.random() * maxY;
+      if (clear(x, y, rects)){ el.style.left = x+'px'; el.style.top = y+'px'; el.style.display=''; return true; }
+    }
+    el.style.display = 'none';
+    return false;
+  }
+
+  function burst(circle){
+    const r = circle.getBoundingClientRect();
+    const cx = r.left + r.width/2, cy = r.top + r.height/2;
+    circle.remove();
+    circles = circles.filter(c => c !== circle);
+    if (reduce) return;
+
+    for (let i = 0; i < 7; i++){
+      const t = document.createElement('div');
+      t.className = 'shard';
+      document.body.appendChild(t);
+
+      const angle = (i / 7) * Math.PI * 2;
+      const speed = 2.8 + Math.random() * 1.8;          // fast outward = a pop
+      let x = cx, y = cy;
+      let vx = Math.cos(angle) * speed;
+      let vy = Math.sin(angle) * speed - 0.4;           // mostly radial
+      const gravity = 0.22;
+      const spin = (Math.random() - .5) * 10;
+      let rot = 0;
+      const start = performance.now();
+      const LIFE = 190;                                 // pops and is gone almost instantly
+
+      (function frame(now){
+        const p = (now - start) / LIFE;
+        vy += gravity; x += vx; y += vy; rot += spin;
+        t.style.transform = `translate(${x}px, ${y}px) translate(-50%,-50%) rotate(${rot}deg)`;
+        t.style.opacity = Math.max(0, 1 - p);
+        if (p < 1) requestAnimationFrame(frame);
+        else t.remove();
+      })(start);
+    }
+  }
+
+  function spawn(){
+    circles.forEach(c => c.remove());
+    circles = [];
+    const rects = avoidRects();
+    for (let i = 0; i < COUNT; i++){
+      const c = document.createElement('button');
+      c.className = 'spark';
+      c.setAttribute('aria-label', 'A little something to click');
+      c.addEventListener('click', () => burst(c));
+      document.body.appendChild(c);
+      place(c, rects);
+      circles.push(c);
+    }
+  }
+
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(spawn);
+  else window.addEventListener('load', spawn);
+
+  let tmr;
+  window.addEventListener('resize', () => {
+    clearTimeout(tmr);
+    tmr = setTimeout(() => {
+      const rects = avoidRects();
+      circles = circles.filter(c => document.body.contains(c));
+      circles.forEach(c => place(c, rects));
+    }, 150);
+  });
+})();
+</script>
+</body>
+</html>
