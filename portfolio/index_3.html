@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Name — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/patterns.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body>
+
+  <nav class="site-nav">
+    <div class="container">
+      <span class="logo">your name</span>
+      <ul class="nav-links">
+        <li><a href="#about">about</a></li>
+        <li><a href="#projects">projects</a></li>
+        <li><a href="#contact">contact</a></li>
+      </ul>
+      <button id="theme-toggle" class="theme-toggle" aria-pressed="false">flip to dark</button>
+    </div>
+  </nav>
+
+  <!-- ABOUT -->
+  <section id="about" class="section pattern-dots">
+    <div class="container">
+      <div class="paper-card paper-card--tilt-left">
+        <p class="eyebrow">about me</p>
+        <p class="hero-name">hi, i'm [your name] —</p>
+        <h1>[one line describing who you are]</h1>
+        <!-- REPLACE images/profile-placeholder.svg with your own photo, e.g. images/profile.jpg -->
+        <img src="images/profile-placeholder.svg" alt="[Your name] headshot" style="width:120px;height:120px;object-fit:cover;border:1.5px solid var(--color-ink);border-radius:2px;margin:var(--space-3) 0;" />
+        <p>
+          [REPLACE: 2-3 sentences about who you are — what you're studying, where
+          you're from, what you're into outside of class. This is placeholder text —
+          write it yourself.]
+        </p>
+        <p>
+          [REPLACE: a sentence or two about what you care about / what kind of
+          work excites you.]
+        </p>
+        <div class="about-tags">
+          <span>skill: [e.g. Python]</span>
+          <span>skill: [e.g. HTML/CSS]</span>
+          <span>interest: [e.g. origami]</span>
+          <span>interest: [e.g. hiking]</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="section pattern-checks">
+    <div class="container">
+      <div class="paper-card paper-card--tilt-right" style="max-width:420px;margin-bottom:var(--space-5);">
+        <p class="eyebrow">projects</p>
+        <h2>things i've built</h2>
+        <p>placeholders for now — real projects get added throughout the semester.</p>
+      </div>
+
+      <div class="project-grid">
+        <article class="project-card paper-card">
+          <p class="tag">[project 1 · coming soon]</p>
+          <h3>[Project Name]</h3>
+          <p>[REPLACE: one or two sentences about what this project is/does once
+          you have it. For now this is a placeholder card.]</p>
+        </article>
+
+        <article class="project-card paper-card">
+          <p class="tag">[project 2 · coming soon]</p>
+          <h3>[Project Name]</h3>
+          <p>[REPLACE: short description.]</p>
+        </article>
+
+        <article class="project-card paper-card">
+          <p class="tag">[project 3 · coming soon]</p>
+          <h3>[Project Name]</h3>
+          <p>[REPLACE: short description.]</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section pattern-crosshatch">
+    <div class="container">
+      <div class="paper-card paper-card--tilt-left" style="max-width:420px;">
+        <p class="eyebrow">contact</p>
+        <h2>let's talk</h2>
+        <p>[REPLACE: a line inviting people to reach out.]</p>
+        <div class="contact-links">
+          <a href="mailto:you@example.com">email</a>
+          <a href="https://github.com/yourusername" target="_blank" rel="noopener">github</a>
+          <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener">linkedin</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer pattern-rain">
+    <p style="margin:0;padding:var(--space-3) 0;">© 2026 [your name]. built with paper and code.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

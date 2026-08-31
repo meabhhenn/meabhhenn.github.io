@@ -1,0 +1,44 @@
+/* Each pattern is a full-bleed section background. Content sitting on top
+   uses --card-bg (semi-transparent) so the pattern shows through, the same
+   way the site background stays visible behind a translucent content card. */
+
+.pattern-dots {
+  background-color: var(--color-pink);
+  background-image: radial-gradient(var(--color-pink-dot) 3px, transparent 3px);
+  background-size: 22px 22px;
+}
+
+.pattern-stripes {
+  background-color: var(--color-cream);
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--color-ink) 0 2px,
+    transparent 2px 16px
+  );
+}
+
+.pattern-checks {
+  background-color: var(--color-mustard);
+  background-image: conic-gradient(
+    var(--color-mustard-line) 25%,
+    transparent 0 50%,
+    var(--color-mustard-line) 0 75%,
+    transparent 0
+  );
+  background-size: 20px 20px;
+}
+
+.pattern-crosshatch {
+  background-color: var(--color-blue);
+  background-image: repeating-linear-gradient(45deg, var(--color-ink) 0 1px, transparent 1px 14px),
+    repeating-linear-gradient(-45deg, var(--color-ink) 0 1px, transparent 1px 14px);
+}
+
+.pattern-rain {
+  background-color: var(--color-sage);
+  background-image: repeating-linear-gradient(
+    100deg,
+    var(--color-sage-line) 0 2px,
+    transparent 2px 20px
+  );
+}
