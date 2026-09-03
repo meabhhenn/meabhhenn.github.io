@@ -1,3 +1,19 @@
+/* one continuous mondrian collage behind the whole page */
+.site-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url("../images/mondrian-bg.svg");
+  background-size: cover;
+  background-position: top center;
+  background-repeat: no-repeat;
+  transition: filter 0.2s ease;
+}
+
+[data-theme="dark"] .site-bg {
+  filter: invert(0.92) hue-rotate(180deg) saturate(0.85) brightness(0.9);
+}
+
 .container {
   max-width: 900px;
   margin: 0 auto;
@@ -9,7 +25,9 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--color-cream);
+  background: var(--card-bg);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   border-bottom: 1.5px solid var(--color-ink);
 }
 

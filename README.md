@@ -67,11 +67,21 @@ desktop ≥1024px).
 
 ## Notes on the theme
 
-- Patterns and colors are defined once as CSS variables/classes — reuse
-  `.pattern-dots`, `.pattern-checks`, `.pattern-crosshatch`, `.pattern-rain`,
-  `.pattern-stripes` on any section.
+- `images/mondrian-bg.svg` is one continuous background collage (checkerboard,
+  polka dots, crosshatch, plaid, diagonal stripes, solid color blocks) fixed
+  behind the whole page — edit it directly in a text/vector editor to change
+  colors, shapes, or proportions. It's wired in via `.site-bg` in
+  `layout.css`.
+- Content sections and the nav sit on top using the translucent `.paper-card`
+  / `--card-bg` treatment so the collage shows through, mostly-white,
+  the same way a full-bleed illustration sits behind a floating content
+  column on other reference sites.
+- `css/patterns.css` still has the individual pattern classes (`.pattern-dots`,
+  `.pattern-checks`, etc.) — no longer used for whole sections, but handy if
+  you want to accent a single project card or element later.
 - Dark mode flips the palette (see `[data-theme="dark"]` in `variables.css`)
-  rather than just inverting — card transparency and shadow are tuned
-  separately for dark so it doesn't look muddy.
+  and applies a CSS filter to `.site-bg` (invert + hue-rotate) so the
+  background stays legible instead of glaring white — feel free to hand-tune
+  that filter, it's an approximation.
 - The origami crane interactive feature (drag-to-crease) is intentionally
   not built yet — planned as a follow-up addition to the hero section.

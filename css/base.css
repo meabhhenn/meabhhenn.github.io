@@ -14,7 +14,7 @@ body {
   font-size: var(--text-base);
   line-height: 1.6;
   color: var(--color-ink);
-  background: var(--color-cream);
+  background: transparent; /* .site-bg (fixed, behind content) supplies the page background */
 }
 
 h1,
