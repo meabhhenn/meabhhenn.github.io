@@ -1,113 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Name — Portfolio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/variables.css" />
-  <link rel="stylesheet" href="css/patterns.css" />
-  <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/layout.css" />
-  <link rel="stylesheet" href="css/components.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Meabh Hennessy — Portfolio</title>
+<meta name="description" content="Portfolio of Meabh Hennessy — statistics and machine learning student at Carnegie Mellon." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
 
-  <div class="site-bg" aria-hidden="true"></div>
+<nav class="nav">
+  <div class="nav__inner">
+    <a class="nav__name" href="#about">Meabh Hennessy</a>
+    <div class="nav__tabs">
+      <a class="tab tab--about" href="#about" data-tab="about">about</a>
+      <a class="tab tab--timeline" href="#timeline" data-tab="timeline">timeline</a>
+      <a class="tab tab--projects" href="#projects" data-tab="projects">projects</a>
+      <a class="tab tab--contact" href="#contact" data-tab="contact">contact</a>
+    </div>
+  </div>
+</nav>
 
-  <nav class="site-nav">
-    <div class="container">
-      <span class="logo">your name</span>
-      <ul class="nav-links">
-        <li><a href="#about">about</a></li>
-        <li><a href="#projects">projects</a></li>
-        <li><a href="#contact">contact</a></li>
+<main>
+
+  <section class="section section--about" id="about">
+    <div class="flock" data-flock="about" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="card card--hero">
+        <button class="crane-tab" type="button" id="open-fold" aria-label="Fold a paper crane" title="fold a paper crane"></button>
+
+        <p class="eyebrow">01 / about</p>
+        <p class="kicker">hi, i&rsquo;m</p>
+        <h1 class="display">
+          <span class="name" id="name-trigger" tabindex="0" role="button" aria-describedby="name-note">Meabh<span class="name__note" id="name-note" role="tooltip"><span class="name__ipa">/ mayv /</span>Irish &mdash; the older spelling of Maeve, from Old Irish <em>Medb</em>, &ldquo;she who intoxicates.&rdquo;</span></span> Hennessy
+        </h1>
+
+        <div class="hero__grid">
+          <div>
+            <p class="lede">[one line describing who you are]</p>
+            <p class="body">[REPLACE: 2&ndash;3 sentences about who you are &mdash; what you're studying, where you're from, what you're into outside of class.]</p>
+            <p class="body">[REPLACE: a sentence or two about what kind of work excites you.]</p>
+            <p class="eyebrow eyebrow--tight">skills &amp; interests</p>
+            <ul class="tags">
+              <li class="tag tag--pink">[skill]</li>
+              <li class="tag tag--blue">[skill]</li>
+              <li class="tag tag--sage">[skill]</li>
+              <li class="tag tag--mustard">[interest]</li>
+              <li class="tag tag--pink">[interest]</li>
+            </ul>
+          </div>
+
+          <figure class="photo">
+            <div class="photo__frame">
+              <img src="images/profile-placeholder.svg" alt="Portrait of Meabh Hennessy" />
+            </div>
+            <figcaption class="photo__caption">[caption]</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--timeline" id="timeline">
+    <div class="flock" data-flock="timeline" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="card card--intro card--tilt-b">
+        <p class="eyebrow">02 / timeline</p>
+        <h2 class="heading">[section heading]</h2>
+        <p class="body body--sm">[REPLACE: one line framing the work.]</p>
+        <p class="note">hover a marker to peek &middot; click to pin it open</p>
+      </div>
+
+      <ol class="rail">
+        <li class="rail__entry" data-kind="research">
+          <div class="rail__slot rail__slot--top">
+            <article class="tl-card">
+              <p class="tl-card__dates">[dates]</p>
+              <h3 class="tl-card__role">[role title]</h3>
+              <p class="tl-card__org">[lab or department]</p>
+              <span class="award">[award, if any]</span>
+              <button class="tl-toggle" type="button" aria-expanded="false"><span>more detail</span></button>
+              <div class="tl-card__detail">
+                <ul>
+                  <li>[REPLACE: what you did.]</li>
+                  <li>[REPLACE: what it produced.]</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+          <button class="rail__mark" type="button" aria-expanded="false" aria-label="[role title], [dates]">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="7" /></svg>
+          </button>
+          <div class="rail__slot rail__slot--bottom"></div>
+        </li>
+
+        <li class="rail__entry" data-kind="teaching">
+          <div class="rail__slot rail__slot--top"></div>
+          <button class="rail__mark" type="button" aria-expanded="false" aria-label="[role title], [dates]">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" /></svg>
+          </button>
+          <div class="rail__slot rail__slot--bottom">
+            <article class="tl-card">
+              <p class="tl-card__dates">[dates]</p>
+              <h3 class="tl-card__role">[role title]</h3>
+              <p class="tl-card__org">[course or department]</p>
+              <button class="tl-toggle" type="button" aria-expanded="false"><span>more detail</span></button>
+              <div class="tl-card__detail">
+                <ul>
+                  <li>[REPLACE: responsibility.]</li>
+                  <li>[REPLACE: responsibility.]</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </li>
+
+        <li class="rail__entry" data-kind="research">
+          <div class="rail__slot rail__slot--top">
+            <article class="tl-card">
+              <p class="tl-card__dates">[dates]</p>
+              <h3 class="tl-card__role">[role title]</h3>
+              <p class="tl-card__org">[lab or department]</p>
+              <span class="award">[award, if any]</span>
+              <button class="tl-toggle" type="button" aria-expanded="false"><span>more detail</span></button>
+              <div class="tl-card__detail">
+                <ul>
+                  <li>[REPLACE: methods and tools.]</li>
+                  <li>[REPLACE: result or output.]</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+          <button class="rail__mark" type="button" aria-expanded="false" aria-label="[role title], [dates]">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="7" /></svg>
+          </button>
+          <div class="rail__slot rail__slot--bottom"></div>
+        </li>
+
+        <li class="rail__entry" data-kind="leadership">
+          <div class="rail__slot rail__slot--top"></div>
+          <button class="rail__mark" type="button" aria-expanded="false" aria-label="[role title], [dates]">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><polygon points="12,4 20,19 4,19" /></svg>
+          </button>
+          <div class="rail__slot rail__slot--bottom">
+            <article class="tl-card">
+              <p class="tl-card__dates">[dates]</p>
+              <h3 class="tl-card__role">[role title]</h3>
+              <p class="tl-card__org">[organization]</p>
+              <span class="award">[award, if any]</span>
+              <button class="tl-toggle" type="button" aria-expanded="false"><span>more detail</span></button>
+              <div class="tl-card__detail">
+                <ul>
+                  <li>[REPLACE: what you led.]</li>
+                  <li>[REPLACE: outcome.]</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </li>
+
+        <li class="rail__entry" data-kind="leadership">
+          <div class="rail__slot rail__slot--top">
+            <article class="tl-card">
+              <p class="tl-card__dates">[dates]</p>
+              <h3 class="tl-card__role">[role title]</h3>
+              <p class="tl-card__org">[organization]</p>
+              <button class="tl-toggle" type="button" aria-expanded="false"><span>more detail</span></button>
+              <div class="tl-card__detail">
+                <ul>
+                  <li>[REPLACE: what you built.]</li>
+                  <li>[REPLACE: scale or impact.]</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+          <button class="rail__mark" type="button" aria-expanded="false" aria-label="[role title], [dates]">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><polygon points="12,4 20,19 4,19" /></svg>
+          </button>
+          <div class="rail__slot rail__slot--bottom"></div>
+        </li>
+      </ol>
+
+      <ul class="legend">
+        <li><svg viewBox="0 0 14 14" width="12" height="12" aria-hidden="true"><circle cx="7" cy="7" r="5.5" fill="var(--blue)" stroke="#2b2b28" stroke-width="1.4" /></svg>research</li>
+        <li><svg viewBox="0 0 14 14" width="12" height="12" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" fill="var(--mustard)" stroke="#2b2b28" stroke-width="1.4" /></svg>teaching</li>
+        <li><svg viewBox="0 0 14 14" width="12" height="12" aria-hidden="true"><polygon points="7,1.5 13,12.5 1,12.5" fill="var(--pink)" stroke="#2b2b28" stroke-width="1.4" /></svg>leadership</li>
       </ul>
-      <button id="theme-toggle" class="theme-toggle" aria-pressed="false">flip to dark</button>
     </div>
-  </nav>
+  </section>
 
-  <!-- ABOUT -->
-  <section id="about" class="section">
-    <div class="container">
-      <div class="paper-card paper-card--tilt-left">
-        <p class="eyebrow">about me</p>
-        <p class="hero-name">hi, i'm [your name] —</p>
-        <h1>[one line describing who you are]</h1>
-        <!-- REPLACE images/profile-placeholder.svg with your own photo, e.g. images/profile.jpg -->
-        <img src="images/profile-placeholder.svg" alt="[Your name] headshot" style="width:120px;height:120px;object-fit:cover;border:1.5px solid var(--color-ink);border-radius:2px;margin:var(--space-3) 0;" />
-        <p>
-          [REPLACE: 2-3 sentences about who you are — what you're studying, where
-          you're from, what you're into outside of class. This is placeholder text —
-          write it yourself.]
-        </p>
-        <p>
-          [REPLACE: a sentence or two about what you care about / what kind of
-          work excites you.]
-        </p>
-        <div class="about-tags">
-          <span>skill: [e.g. Python]</span>
-          <span>skill: [e.g. HTML/CSS]</span>
-          <span>interest: [e.g. origami]</span>
-          <span>interest: [e.g. hiking]</span>
+  <section class="section section--projects" id="projects">
+    <div class="flock" data-flock="projects" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="projects__head">
+        <div class="card card--intro card--tilt-b">
+          <p class="eyebrow">03 / projects</p>
+          <h2 class="heading">[section heading]</h2>
+          <p class="body body--sm">[REPLACE: one line about the projects.]</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <article class="card card--project card--tilt-a">
+          <span class="award award--corner">[award tag, or delete]</span>
+          <div class="shot"><img src="images/project-placeholder.svg" alt="[project name] screenshot" /></div>
+          <div class="card--project__text">
+            <p class="note">[01 &middot; stack]</p>
+            <h3 class="title">[project name]</h3>
+            <p class="body body--sm">[REPLACE: what this project is and what you built it with.]</p>
+          </div>
+        </article>
+
+        <article class="card card--project card--tilt-b card--offset">
+          <div class="shot"><img src="images/project-placeholder.svg" alt="[project name] screenshot" /></div>
+          <div class="card--project__text">
+            <p class="note">[02 &middot; stack]</p>
+            <h3 class="title">[project name]</h3>
+            <p class="body body--sm">[REPLACE: short description.]</p>
+          </div>
+        </article>
+
+        <article class="card card--project card--tilt-c card--offset-lg">
+          <div class="shot"><img src="images/project-placeholder.svg" alt="[project name] screenshot" /></div>
+          <div class="card--project__text">
+            <p class="note">[03 &middot; stack]</p>
+            <h3 class="title">[project name]</h3>
+            <p class="body body--sm">[REPLACE: short description.]</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--contact" id="contact">
+    <div class="flock" data-flock="contact" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="card card--business">
+        <p class="eyebrow">04 / contact</p>
+        <h2 class="heading">[section heading]</h2>
+        <p class="body">[REPLACE: a line inviting people to reach out.]</p>
+        <div class="contact__rows">
+          <a class="contact__row" href="mailto:[email]"><span class="contact__label">email</span><span class="contact__value">[email]</span></a>
+          <a class="contact__row" href="https://github.com/meabhhenn" target="_blank" rel="noopener"><span class="contact__label">github</span><span class="contact__value">meabhhenn</span></a>
+          <a class="contact__row" href="[linkedin url]" target="_blank" rel="noopener"><span class="contact__label">linkedin</span><span class="contact__value">[username]</span></a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PROJECTS -->
-  <section id="projects" class="section">
-    <div class="container">
-      <div class="paper-card paper-card--tilt-right" style="max-width:420px;margin-bottom:var(--space-5);">
-        <p class="eyebrow">projects</p>
-        <h2>things i've built</h2>
-        <p>placeholders for now — real projects get added throughout the semester.</p>
+</main>
+
+<footer class="footer">
+  <p>&copy; 2026 Meabh Hennessy</p>
+  <p>designed &amp; built by Meabh Hennessy &middot; <a href="https://github.com/meabhhenn/meabhhenn.github.io" target="_blank" rel="noopener">source on github</a></p>
+</footer>
+
+<div class="modal" id="fold-modal" role="dialog" aria-modal="true" aria-label="Fold a paper crane" hidden>
+  <div class="modal__panel">
+    <button class="modal__close" type="button" id="close-fold" aria-label="Close">&times;</button>
+
+    <p class="eyebrow" id="step-label">fold 1 of 12</p>
+    <p class="modal__title" id="step-title">diagonal, corner to corner</p>
+    <p class="body body--sm" id="step-hint">&nbsp;</p>
+    <p class="note" id="fold-type">&nbsp;</p>
+
+    <div class="modal__body">
+      <div class="stage">
+        <svg id="paper" viewBox="-26 -26 252 252" width="250" height="250">
+          <defs>
+            <pattern id="backFace" width="11" height="11" patternUnits="userSpaceOnUse">
+              <rect width="11" height="11" fill="#fbeaea" />
+              <circle cx="5.5" cy="5.5" r="1.7" fill="#e3a0a0" />
+            </pattern>
+          </defs>
+          <ellipse id="paper-shadow" cx="100" cy="200" rx="60" ry="9" fill="#2b2b28" opacity="0.09" />
+          <g id="stage-tilt">
+            <g id="stage-flip">
+              <g id="crease-layer"></g>
+              <g id="poly-layer"></g>
+              <line id="ghost" stroke="var(--doodle)" stroke-width="1.4" stroke-dasharray="6 4" opacity="0" />
+              <line id="crease-hint" stroke="var(--doodle)" stroke-width="1.2" stroke-dasharray="3 3" opacity="0" />
+              <circle id="target-dot" r="8" fill="none" stroke="var(--doodle)" stroke-width="1.4" stroke-dasharray="4 3" opacity="0" />
+              <circle id="grab-dot" r="6" fill="var(--doodle)" opacity="0" />
+            </g>
+          </g>
+        </svg>
       </div>
 
-      <div class="project-grid">
-        <article class="project-card paper-card">
-          <p class="tag">[project 1 · coming soon]</p>
-          <h3>[Project Name]</h3>
-          <p>[REPLACE: one or two sentences about what this project is/does once
-          you have it. For now this is a placeholder card.]</p>
-        </article>
-
-        <article class="project-card paper-card">
-          <p class="tag">[project 2 · coming soon]</p>
-          <h3>[Project Name]</h3>
-          <p>[REPLACE: short description.]</p>
-        </article>
-
-        <article class="project-card paper-card">
-          <p class="tag">[project 3 · coming soon]</p>
-          <h3>[Project Name]</h3>
-          <p>[REPLACE: short description.]</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact" class="section">
-    <div class="container">
-      <div class="paper-card paper-card--tilt-left" style="max-width:420px;">
-        <p class="eyebrow">contact</p>
-        <h2>let's talk</h2>
-        <p>[REPLACE: a line inviting people to reach out.]</p>
-        <div class="contact-links">
-          <a href="mailto:you@example.com">email</a>
-          <a href="https://github.com/yourusername" target="_blank" rel="noopener">github</a>
-          <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener">linkedin</a>
+      <div class="modal__side">
+        <p class="eyebrow eyebrow--tight">gestures</p>
+        <ul class="gestures">
+          <li><strong>pull</strong> the marked point onto its target</li>
+          <li><strong>let go early</strong> and it springs back</li>
+          <li><strong>double-click</strong> to turn the paper over</li>
+        </ul>
+        <p class="note" id="progress-text">square base at 4 &middot; bird base at 6 &middot; crane at 12</p>
+        <div class="progress"><div class="progress__fill" id="progress-fill"></div></div>
+        <div class="modal__buttons">
+          <button class="btn btn--primary" type="button" id="do-fold">fold this one for me</button>
+          <button class="btn" type="button" id="step-back">back a fold</button>
+          <button class="btn btn--quiet" type="button" id="start-over">start over</button>
         </div>
+        <p class="note note--sage" id="free-note" hidden>Free-folding now: drag from any point on the paper to any other and it creases there.</p>
       </div>
     </div>
-  </section>
+  </div>
+</div>
 
-  <footer class="site-footer">
-    <p style="margin:0;padding:var(--space-3) 0;">© 2026 [your name]. built with paper and code.</p>
-  </footer>
-
-  <script src="js/main.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

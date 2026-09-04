@@ -1,87 +1,65 @@
-# [Your Name] — Portfolio
+# meabhhenn.github.io
 
-Personal portfolio site. Paper-craft / Mondrian theme: each section has its
-own pattern background (dots, checks, crosshatch, rain-stripe), with content
-sitting in semi-transparent "paper card" panels so the pattern shows through
-— same idea as a full-bleed background behind a floating content column.
+Personal portfolio. Single-page scroll site, paper-craft / collage theme:
+each section is a pastel pattern field, and the content sits in tilted
+paper cards with flat offset shadows.
 
-## Structure
+## Files
 
 ```
-index.html
-css/
-  variables.css   → colors, type scale, spacing (edit palette here)
-  patterns.css    → the 5 reusable background patterns
-  base.css        → resets, typography, the .paper-card component
-  layout.css      → nav, section layout, responsive project grid
-  components.css  → theme toggle button, small bits
-js/
-  main.js         → dark mode toggle (persists via localStorage)
-images/
-  profile-placeholder.svg  → swap this for your real photo
-  projects/                → drop project screenshots here
+index.html            all markup, four sections + the folding-paper dialog
+css/styles.css        every style; mobile-first, breakpoints at 640px and 1024px
+js/main.js            nav highlighting, name note, timeline peek/pin, fold engine
+images/               placeholder art — replace with real photos/screenshots
 ```
 
-## What to replace before submitting
+No build step, no dependencies. Open `index.html` in a browser, or push and
+GitHub Pages serves it as-is.
 
-Everything in `[brackets]` inside `index.html` is a placeholder:
-- Your name (title tag, nav logo, footer, hero heading)
-- About Me bio text (2 paragraphs) + skill/interest tags
-- Your profile photo (`images/profile-placeholder.svg` → your own image)
-- The 3 project cards (title + description; add real projects as you build them)
-- Contact links (email, GitHub, LinkedIn)
+## Fill these in
 
-## Running locally
+Anything in square brackets is a placeholder:
 
-No build step — just open `index.html` in a browser, or serve it locally:
+- `[one line describing who you are]` and the two `[REPLACE: ...]` bio paragraphs
+- `[skill]` / `[interest]` tags
+- every timeline entry: `[dates]`, `[role title]`, `[lab or department]`,
+  `[award, if any]`, and the two detail bullets
+- each project: `[project name]`, `[NN · stack]`, description, optional award tag
+- `[email]` and `[linkedin url]` / `[username]` in the contact card
+- `[caption]` under the portrait
 
-```bash
-python3 -m http.server 8000
-```
+Images: drop real files into `images/` and point the `<img src>` at them.
+Portrait is 4:5, project shots are 16:10.
 
-then visit `http://localhost:8000`.
+## Responsive behaviour
 
-## Deploying to GitHub Pages
+- **< 640px** — one column. The timeline is a vertical spine; card tilt is
+  damped so nothing clips the viewport edge.
+- **640–1023px** — two-column project grid with the second card offset. The
+  timeline becomes the horizontal rail, cards alternating above and below.
+- **≥ 1024px** — asymmetric three-column project grid (1.15fr 1fr 1fr) with a
+  staggered third card; the hero fills 82vh.
 
-1. Create a new repo on GitHub (or use one named `yourusername.github.io` for
-   a root-domain URL).
-2. Push this folder's contents to the repo root:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial portfolio"
-   git branch -M main
-   git remote add origin https://github.com/yourusername/your-repo.git
-   git push -u origin main
-   ```
-3. On GitHub: Settings → Pages → Source → deploy from `main` branch, `/root`.
-4. Your site will be live at `https://yourusername.github.io/your-repo/`
-   (or `https://yourusername.github.io/` if you used the special repo name).
+## The folding paper
 
-## Adding a new project later
+The tab on the top-right corner of the About card opens a dialog holding a
+square of paper and the traditional twelve-fold crane sequence.
 
-Copy one `<article class="project-card paper-card">...</article>` block in
-the Projects section, fill in the title/description, and it'll automatically
-join the responsive grid (stacks on mobile, forms the mondrian layout on
-desktop ≥1024px).
+Folds 1–4 are computed: the engine reflects every layer across the crease line
+and clips it, so layers stack the way real paper does. Folds 5–12 are petal,
+reverse and mountain folds, which lift paper off the flat plane — a reflection
+cannot express that, so those stages carry authored geometry with a per-layer
+lift value, and the stage tilts into perspective as the folds leave flat.
 
-## Notes on the theme
+Drag the marked point onto its dashed target to commit a fold; release short of
+it and the paper springs back. Double-click turns the paper over. After the
+twelfth fold it enters free-fold mode (drag between any two points) and a
+finished crane is released into one of the section backgrounds.
 
-- `images/mondrian-bg.svg` is one continuous background collage (checkerboard,
-  polka dots, crosshatch, plaid, diagonal stripes, solid color blocks) fixed
-  behind the whole page — edit it directly in a text/vector editor to change
-  colors, shapes, or proportions. It's wired in via `.site-bg` in
-  `layout.css`.
-- Content sections and the nav sit on top using the translucent `.paper-card`
-  / `--card-bg` treatment so the collage shows through, mostly-white,
-  the same way a full-bleed illustration sits behind a floating content
-  column on other reference sites.
-- `css/patterns.css` still has the individual pattern classes (`.pattern-dots`,
-  `.pattern-checks`, etc.) — no longer used for whole sections, but handy if
-  you want to accent a single project card or element later.
-- Dark mode flips the palette (see `[data-theme="dark"]` in `variables.css`)
-  and applies a CSS filter to `.site-bg` (invert + hue-rotate) so the
-  background stays legible instead of glaring white — feel free to hand-tune
-  that filter, it's an approximation.
-- The origami crane interactive feature (drag-to-crease) is intentionally
-  not built yet — planned as a follow-up addition to the hero section.
+## Accessibility notes
+
+- Timeline detail opens on hover, keyboard focus, and click-to-pin on wider
+  screens; below 640px each card carries its own "more detail" button with a
+  44px tap target, since phones have no hover.
+- The pronunciation note on "Meabh" responds to hover, focus and tap.
+- `prefers-reduced-motion` disables transitions and smooth scrolling.
