@@ -1,8 +1,34 @@
+/*
+  js/main.js — Meabh Hennessy, 15-113 Project 1.
+
+  AI USAGE: drafted with Claude (claude.ai), then reworked by hand. See
+  PROMPTS.md for the log.
+
+  What is in here:
+    1. nav scroll state — an IntersectionObserver marks the section you are in
+       and fills that nav tab with the section's colour
+    2. timeline — each card opens on hover on desktop, on a button tap on
+       mobile, and cards open independently of one another
+    3. the folding feature (the part I care about) — click a gum wrapper in the
+       margin of any section and a dialog walks you through the eight folds of
+       a gum-wrapper heart. Folds 1-4 are computed as real reflections of the
+       paper across the crease line; from fold 5 the paper leaves the flat
+       plane, which a reflection cannot express, so those stages carry authored
+       geometry with a per-layer lift value. When the eighth fold lands, the
+       finished heart is drawn in place of the wrapper that was clicked and
+       stays there. Reloading puts the flat wrappers back.
+
+  The fold sequence is mine and took three attempts to get into the code: the
+  AI kept folding a square in half diagonally, which is not how it works. The
+  real method is four corners in to point both ends, fold in half for a centre
+  crease, open it back out, then bring each half up along that crease.
+*/
+
 /* Meabh Hennessy — portfolio behaviour
    1. nav tab highlighting on scroll
    2. name pronunciation note (tap support)
    3. timeline: hover to peek, click to pin
-   4. the folding paper: a real fold engine + the traditional crane sequence
+   4. the folding paper: a real fold engine + a five-fold gum-wrapper heart
    No libraries, no build step. */
 
 (function () {
@@ -11,7 +37,7 @@
   /* ---------- 1. nav ---------- */
 
   var tabs = Array.prototype.slice.call(document.querySelectorAll("[data-tab]"));
-  var sections = ["about", "timeline", "projects", "contact"];
+  var sections = ["about", "timeline", "projects", "activities", "contact"];
 
   function setActive(id) {
     tabs.forEach(function (t) {
@@ -97,11 +123,23 @@
     }
   });
 
+  /* ---------- 3b. activity tiles: tap/keyboard route to the reveal ---------- */
+
+  Array.prototype.slice.call(document.querySelectorAll(".act-tile")).forEach(function (tile) {
+    var info = tile.querySelector(".act-info");
+    if (!info) return;
+    info.addEventListener("click", function () {
+      var open = tile.classList.toggle("is-open");
+      info.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  });
+
   /* ---------- 4. the folding paper ---------- */
 
   var SVG_NS = "http://www.w3.org/2000/svg";
   var S = 200;
-  var SQUARE = [[0, 0], [S, 0], [S, S], [0, S]];
+  /* a gum wrapper is a rectangular strip, not a square */
+  var SQUARE = [[8, 78], [192, 78], [192, 122], [8, 122]];
   var SNAP = 28;
 
   /* fold geometry: a fold reflects everything on one side of a line across it */
@@ -147,130 +185,98 @@
     return arr.map(function (p) { return p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" ");
   }
 
-  /* The traditional crane. The first four folds are real reflections computed by
-     the engine; the petal and reverse folds lift paper off the plane, which a
-     mirror cannot express, so those stages carry authored geometry with a lift
-     value per layer and the stage tilts into perspective. */
+  /* The gum-wrapper heart, folded the way it really is. Four corner folds point
+     both ends of the strip; a fifth fold puts a crease down the middle and the
+     sixth opens it again; the last two bring each half up along that crease, so
+     the two points stand as the lobes and the fold at the foot is the point of
+     the heart. Eight folds, all authored — the paper leaves the flat plane from
+     the fifth fold on, which a reflection cannot express. */
   var STEPS = [
-    { kind: "valley", grab: [0, 0], target: [S, S], crease: [[S, 0], [0, S]], tilt: 0,
-      title: "diagonal, corner to corner",
-      hint: "Coloured side up. Pull the top-left corner onto the bottom-right one and crease hard." },
-    { kind: "valley", grab: [S, 0], target: [0, S], crease: [[0, 0], [S, S]], tilt: 0,
-      title: "the other diagonal",
-      hint: "Unfold, then fold the other way — right corner across to the left. Two diagonals creased." },
-    { kind: "valley", grab: [0, S], target: [100, 100], crease: [[0, 100], [S, 300]], tilt: 0.15,
-      title: "left flap to the point",
-      hint: "Bring the bottom-left corner up to the top point. Half the preliminary base." },
-    { kind: "valley", grab: [S, S], target: [100, 100], crease: [[100, S], [S, 100]], tilt: 0.25,
-      title: "right flap to the point",
-      hint: "Mirror it on the right. You now have the preliminary base — a smaller square with four loose corners at the bottom." },
-    { kind: "petal", grab: [100, 186], target: [100, 36], tilt: 0.4,
-      title: "petal fold, front",
-      hint: "Take the bottom point of the front layer only and swing it all the way up to the top point. The two side corners fold themselves inward as it goes.",
+    { kind: "valley", grab: [8,78], target: [24,96], tilt: 0,
+      title: "top left corner in to the centre line",
+      hint: "Silver side down, long edges left and right. Fold the top left corner in until the left edge lies along the middle of the strip.",
       layers: [
-        { pts: [[100, 34], [158, 112], [100, 190], [42, 112]], face: 0, lift: 0 },
-        { pts: [[100, 34], [130, 100], [100, 126], [70, 100]], face: 1, lift: 0.6 },
-        { pts: [[70, 100], [100, 126], [100, 186]], face: 1, lift: 0.3 },
-        { pts: [[130, 100], [100, 126], [100, 186]], face: 1, lift: 0.3 }
+        { pts: [[40,78],[192,78],[192,122],[8,122],[8,100]], face: 0, lift: 0 },
+        { pts: [[40,78],[8,100],[36,104]], face: 1, lift: 0.12 }
       ] },
-    { kind: "petal", grab: [100, 186], target: [100, 40], tilt: 0.45,
-      title: "petal fold, back",
-      hint: "Turn the paper over and do exactly the same thing again. Now both sides are petalled and you are holding the bird base.",
+    { kind: "valley", grab: [8,122], target: [24,104], tilt: 0,
+      title: "bottom left corner in, the end is a point",
+      hint: "The bottom left corner the same way. The left end of the wrapper now comes to a point.",
       layers: [
-        { pts: [[100, 40], [150, 112], [100, 152], [50, 112]], face: 0, lift: 0 },
-        { pts: [[100, 44], [126, 104], [100, 124], [74, 104]], face: 1, lift: 0.65 },
-        { pts: [[92, 148], [74, 196], [100, 152]], face: 1, lift: 0.25 },
-        { pts: [[108, 148], [126, 196], [100, 152]], face: 1, lift: 0.25 }
+        { pts: [[40,78],[192,78],[192,122],[40,122],[8,100]], face: 0, lift: 0 },
+        { pts: [[40,78],[8,100],[36,104]], face: 1, lift: 0.12 },
+        { pts: [[40,122],[8,100],[36,96]], face: 1, lift: 0.12 }
       ] },
-    { kind: "valley", grab: [74, 194], target: [98, 194], tilt: 0.45,
-      title: "narrow the left point",
-      hint: "Fold the outer edge of the left hanging point in to the centre line, so the point becomes a thin spike. A crane needs a slim neck.",
+    { kind: "valley", grab: [192,78], target: [176,96], tilt: 0,
+      title: "top right corner in",
+      hint: "Now the top right corner, in to the middle line exactly as before.",
       layers: [
-        { pts: [[100, 40], [150, 112], [100, 152], [50, 112]], face: 0, lift: 0 },
-        { pts: [[100, 44], [126, 104], [100, 124], [74, 104]], face: 1, lift: 0.65 },
-        { pts: [[94, 148], [86, 196], [100, 152]], face: 1, lift: 0.25 },
-        { pts: [[108, 148], [126, 196], [100, 152]], face: 1, lift: 0.25 }
+        { pts: [[40,78],[160,78],[192,100],[192,122],[40,122],[8,100]], face: 0, lift: 0 },
+        { pts: [[40,78],[8,100],[36,104]], face: 1, lift: 0.12 },
+        { pts: [[40,122],[8,100],[36,96]], face: 1, lift: 0.12 },
+        { pts: [[160,78],[192,100],[164,104]], face: 1, lift: 0.12 }
       ] },
-    { kind: "valley", grab: [126, 194], target: [102, 194], tilt: 0.45,
-      title: "narrow the right point",
-      hint: "The same fold mirrored on the right point. Two thin spikes now — one will be the neck, the other the tail.",
+    { kind: "valley", grab: [192,122], target: [176,104], tilt: 0,
+      title: "bottom right corner in, both ends are points",
+      hint: "And the bottom right. Both ends are points — the wrapper is a long arrow at each end.",
       layers: [
-        { pts: [[100, 40], [150, 112], [100, 152], [50, 112]], face: 0, lift: 0 },
-        { pts: [[100, 44], [126, 104], [100, 124], [74, 104]], face: 1, lift: 0.65 },
-        { pts: [[94, 148], [86, 196], [100, 152]], face: 1, lift: 0.25 },
-        { pts: [[106, 148], [114, 196], [100, 152]], face: 1, lift: 0.25 }
+        { pts: [[40,78],[160,78],[192,100],[160,122],[40,122],[8,100]], face: 0, lift: 0 },
+        { pts: [[40,78],[8,100],[36,104]], face: 1, lift: 0.12 },
+        { pts: [[40,122],[8,100],[36,96]], face: 1, lift: 0.12 },
+        { pts: [[160,78],[192,100],[164,104]], face: 1, lift: 0.12 },
+        { pts: [[160,122],[192,100],[164,96]], face: 1, lift: 0.12 }
       ] },
-    { kind: "reverse", grab: [92, 194], target: [46, 56], tilt: 0.5,
-      title: "reverse fold the neck",
-      hint: "Swing the left spike up between its own layers, so it points up and to the left instead of down. This is the neck.",
+    { kind: "valley", grab: [8,100], target: [192,100], tilt: 0,
+      title: "fold it in half to make the centre crease",
+      hint: "Fold the whole thing in half, right end onto left, and press the crease down the middle.",
       layers: [
-        { pts: [[100, 46], [146, 112], [100, 156], [54, 112]], face: 0, lift: 0 },
-        { pts: [[100, 50], [124, 104], [100, 122], [76, 104]], face: 1, lift: 0.6 },
-        { pts: [[92, 120], [46, 56], [58, 66], [100, 128]], face: 1, lift: 0.8 },
-        { pts: [[106, 150], [114, 196], [100, 154]], face: 1, lift: 0.25 }
+        { pts: [[100,78],[160,78],[192,100],[160,122],[100,122]], face: 0, lift: 0 },
+        { pts: [[100,78],[152,78],[182,100],[152,122],[100,122]], face: 1, lift: 0.12 }
       ] },
-    { kind: "reverse", grab: [110, 194], target: [168, 76], tilt: 0.55,
-      title: "reverse fold the tail",
-      hint: "The same move on the right spike, swung up at a shallower angle. Now it reads as a bird.",
+    { kind: "valley", grab: [100,100], target: [100,100], tilt: 0,
+      title: "open it back out, the crease stays",
+      hint: "Open it straight back out. All you wanted was that centre crease to fold against.",
       layers: [
-        { pts: [[100, 48], [142, 112], [100, 158], [58, 112]], face: 0, lift: 0 },
-        { pts: [[92, 120], [46, 56], [58, 66], [100, 128]], face: 1, lift: 0.8 },
-        { pts: [[108, 124], [168, 76], [174, 90], [112, 136]], face: 1, lift: 0.8 },
-        { pts: [[100, 52], [122, 102], [100, 120], [78, 102]], face: 0, lift: 0.6 }
+        { pts: [[40,78],[160,78],[192,100],[160,122],[40,122],[8,100]], face: 0, lift: 0 },
+        { pts: [[40,78],[8,100],[36,104]], face: 1, lift: 0.12 },
+        { pts: [[40,122],[8,100],[36,96]], face: 1, lift: 0.12 },
+        { pts: [[160,78],[192,100],[164,104]], face: 1, lift: 0.12 },
+        { pts: [[160,122],[192,100],[164,96]], face: 1, lift: 0.12 }
       ] },
-    { kind: "mountain", grab: [46, 56], target: [34, 66], tilt: 0.55,
-      title: "fold the head",
-      hint: "Pinch the very tip of the neck and fold it back down on itself. That small fold is the head and beak.",
+    { kind: "mountain", grab: [192,100], target: [140,60], tilt: 0.16,
+      title: "bring the right half up along the crease",
+      hint: "Take the right half and bring it up along the centre crease, so its point stands up beside the middle.",
       layers: [
-        { pts: [[100, 48], [142, 112], [100, 158], [58, 112]], face: 0, lift: 0 },
-        { pts: [[92, 120], [48, 58], [60, 68], [100, 128]], face: 1, lift: 0.8 },
-        { pts: [[48, 58], [30, 64], [40, 74], [56, 68]], face: 0, lift: 0.85 },
-        { pts: [[108, 124], [168, 76], [174, 90], [112, 136]], face: 1, lift: 0.8 },
-        { pts: [[100, 52], [122, 102], [100, 120], [78, 102]], face: 0, lift: 0.6 }
+        { pts: [[40,78],[100,78],[100,122],[40,122],[8,100]], face: 0, lift: 0 },
+        { pts: [[100,66],[114,38],[154,38],[176,58],[176,74],[100,150]], face: 1, lift: 0 },
+        { pts: [[40,78],[8,100],[36,104]], face: 1, lift: 0.12 },
+        { pts: [[40,122],[8,100],[36,96]], face: 1, lift: 0.12 }
       ] },
-    { kind: "valley", grab: [142, 112], target: [176, 112], tilt: 0.6,
-      title: "open the wings",
-      hint: "Hold the body and draw both wings out sideways until they spread. One paper crane.",
+    { kind: "mountain", grab: [8,100], target: [60,60], tilt: 0.2,
+      title: "a gum-wrapper heart",
+      hint: "The left half up the same way. The two points are the lobes and the fold at the foot is the point of the heart.",
       layers: [
-        { pts: [[100, 124], [26, 108], [58, 142]], face: 0, lift: 0.2 },
-        { pts: [[100, 124], [174, 108], [142, 142]], face: 1, lift: 0.2 },
-        { pts: [[100, 116], [114, 134], [100, 172], [86, 134]], face: 0, lift: 0 },
-        { pts: [[92, 120], [48, 58], [60, 68], [100, 128]], face: 1, lift: 0.8 },
-        { pts: [[48, 58], [30, 64], [40, 74], [56, 68]], face: 0, lift: 0.85 },
-        { pts: [[108, 124], [168, 76], [174, 90], [112, 136]], face: 1, lift: 0.8 }
+        { pts: [[100,66],[86,38],[46,38],[24,58],[24,74],[100,162]], face: 0, lift: 0 },
+        { pts: [[100,66],[114,38],[154,38],[176,58],[176,74],[100,162]], face: 1, lift: 0 }
       ] }
   ];
 
   var KIND_LABEL = {
     valley: "valley fold — a flat crease, the paper stays in plane",
-    petal: "petal fold — the flap lifts off the paper and squashes",
-    reverse: "reverse fold — the paper turns inside out along its crease",
-    mountain: "mountain fold — creased the other way, folded behind"
+    mountain: "mountain fold — creased the other way, turned behind",
+    round: "shaping fold — a tip turned back to leave a flat shoulder"
   };
   var KIND_COLOR = {
     valley: "var(--ink-mute)",
-    petal: "var(--sage)",
-    reverse: "var(--blue)",
-    mountain: "var(--pink)"
+    mountain: "var(--pink)",
+    round: "var(--sage)"
   };
 
-  var ROOSTS = [
-    { sec: "about", top: "13%", left: "6%", w: 40, rot: -13, back: "#f2e4e4" },
-    { sec: "timeline", top: "8%", left: "86%", w: 34, rot: 9, back: "#e2ece3" },
-    { sec: "projects", top: "78%", left: "4%", w: 44, rot: -6, back: "#f5e9cd" },
-    { sec: "contact", top: "20%", left: "82%", w: 38, rot: 14, back: "#e0eaf4" },
-    { sec: "about", top: "72%", left: "90%", w: 30, rot: 7, back: "#f2e4e4" },
-    { sec: "timeline", top: "82%", left: "9%", w: 42, rot: -11, back: "#e2ece3" },
-    { sec: "projects", top: "12%", left: "90%", w: 32, rot: 11, back: "#f5e9cd" },
-    { sec: "contact", top: "74%", left: "10%", w: 36, rot: -8, back: "#e0eaf4" }
-  ];
-
-  var CRANE_PARTS = [
-    ["22,18 6,4 10,20", 0],
-    ["22,18 38,4 34,20", 1],
-    ["22,18 10,20 20,31", 0],
-    ["22,18 34,20 41,26", 1],
-    ["22,18 2,12 7,15", 0]
+  /* the finished heart, plus a sheen sliver that reads as foil */
+  var HEART_SHEEN = "20,14.2 20,31.8 6.4,15.4 5.6,11";
+  var HEART_PARTS = [
+    ["20,13.2 17.2,7.6 9.2,7.6 4.8,11.6 4.8,14.8 20,32.4", 0],
+    ["20,13.2 22.8,7.6 30.8,7.6 35.2,11.6 35.2,14.8 20,32.4", 1]
   ];
 
   var modal = document.getElementById("fold-modal");
@@ -302,7 +308,7 @@
     flipped: false,
     drag: null,
     free: false,
-    craneCount: 0
+    seed: null
   };
 
   function currentTilt() {
@@ -414,41 +420,42 @@
       targetDot.setAttribute("opacity", 0.85);
     }
 
-    stepLabel.textContent = done ? STEPS.length + " folds · one crane" : "fold " + (state.step + 1) + " of " + STEPS.length;
-    stepTitle.textContent = done ? "a paper crane" : st.title;
+    stepLabel.textContent = done ? STEPS.length + " folds · one gum-wrapper heart" : "fold " + (state.step + 1) + " of " + STEPS.length;
+    stepTitle.textContent = done ? "a gum-wrapper heart" : st.title;
     stepHint.textContent = done
-      ? "That is the whole traditional sequence. Your crane has joined the flock in the page behind this — close it and look around."
+      ? "That is the whole sequence. Your heart is now sitting exactly where its wrapper was — close this and go and find it."
       : st.hint;
     foldType.textContent = done ? "free fold — drag anywhere to keep folding" : KIND_LABEL[st.kind];
     foldType.style.color = done ? "var(--sage)" : KIND_COLOR[st.kind];
-    progressText.textContent = done ? "crane complete" : "square base at 4 · bird base at 6 · crane at 12";
+    progressText.textContent = done ? "heart complete" : "points at 4 · crease at 6 · heart at 8";
     progressFill.style.width = Math.round((Math.min(state.step, STEPS.length) / STEPS.length) * 100) + "%";
-    foldBtn.textContent = done ? "flat square" : "fold this one for me";
+    foldBtn.textContent = done ? "flat wrapper" : "fold this one for me";
     freeNote.hidden = !done;
     paper.classList.toggle("is-dragging", !!state.drag);
   }
 
-  function releaseCrane() {
-    var roost = ROOSTS[state.craneCount];
-    if (!roost) return;
-    state.craneCount += 1;
-    var host = document.querySelector('[data-flock="' + roost.sec + '"]');
-    if (!host) return;
-    var svg = el("svg", {
-      viewBox: "0 0 44 34",
-      width: roost.w,
-      "aria-hidden": "true",
-      style: "top:" + roost.top + ";left:" + roost.left + ";opacity:0.9;transform:rotate(" + roost.rot + "deg)"
-    });
-    CRANE_PARTS.forEach(function (part) {
+  /* the finished heart takes the place of the square that was clicked */
+  function plantHeart() {
+    var seed = state.seed;
+    if (!seed || seed.classList.contains("is-folded")) return;
+    var svg = el("svg", { viewBox: "4 6.8 32.4 26.8", "aria-hidden": "true" });
+    HEART_PARTS.forEach(function (part) {
       svg.appendChild(el("polygon", {
         points: part[0],
-        fill: part[1] ? roost.back : "#fffdf8",
+        fill: part[1] ? "#d3d7d6" : "#e7e9e8",
         stroke: "#2b2b28",
-        "stroke-width": 1.2
+        "stroke-width": 1.4,
+        "stroke-linejoin": "round"
       }));
     });
-    host.appendChild(svg);
+    svg.appendChild(el("polygon", {
+      points: HEART_SHEEN, fill: "#ffffff", opacity: 0.5, stroke: "none"
+    }));
+    seed.innerHTML = "";
+    seed.appendChild(svg);
+    seed.classList.add("is-folded");
+    seed.setAttribute("aria-label", "A folded gum-wrapper heart");
+    seed.disabled = true;
   }
 
   function commit() {
@@ -463,7 +470,7 @@
     state.drag = null;
     if (state.step >= STEPS.length) {
       state.free = true;
-      releaseCrane();
+      plantHeart();
     }
     render();
   }
@@ -555,9 +562,14 @@
     render();
   });
 
-  document.getElementById("open-fold").addEventListener("click", function () {
-    modal.hidden = false;
-    render();
+  Array.prototype.forEach.call(document.querySelectorAll(".seed"), function (seed) {
+    seed.addEventListener("click", function () {
+      if (seed.classList.contains("is-folded")) return;
+      state.seed = seed;
+      reset(false);
+      modal.hidden = false;
+      render();
+    });
   });
   document.getElementById("close-fold").addEventListener("click", function () {
     modal.hidden = true;

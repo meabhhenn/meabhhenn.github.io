@@ -1,4 +1,34 @@
 <!DOCTYPE html>
+<!--
+  Meabh Hennessy — portfolio, 15-113 Project 1.
+
+  AI USAGE (required documentation)
+  Tool: Claude (claude.ai), used in conversation across several sittings.
+  Full prompt log: PROMPTS.md in this repository.
+
+  How I used it. I wrote the brief and made every design and content decision:
+  the Mondrian-collage layout, the paper-card treatment, the type pairing, the
+  section colours, which experience goes on the timeline, and the gum-wrapper
+  heart as the interactive feature. I described what I wanted and used AI to
+  draft the HTML/CSS/JS, then read it back and sent it round again where it was
+  wrong — the fold sequence was rebuilt three times because the AI kept folding
+  a square, and I had to give it the real eight-step method (four corners in,
+  centre crease, open, then each half up) before it was right.
+
+  What I changed by hand after AI drafts: the fold geometry and step wording,
+  the timeline copy (cut to short bullets), the skill grouping and colour
+  coding, portrait crop and placement, and the z-index rule that keeps the
+  wrappers below the text layer.
+
+  What each file does:
+    index.html      — content and structure, all sections
+    css/styles.css  — layout, paper-card styling, responsive breakpoints
+    js/main.js      — nav scroll state, timeline expand, the folding feature
+
+  CREDITS
+  All photographs are my own. Fonts are Source Serif 4, Inter and IBM Plex Mono,
+  served from Google Fonts under the SIL Open Font License. No template used.
+-->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -19,6 +49,7 @@
       <a class="tab tab--about" href="#about" data-tab="about">about</a>
       <a class="tab tab--timeline" href="#timeline" data-tab="timeline">timeline</a>
       <a class="tab tab--projects" href="#projects" data-tab="projects">projects</a>
+      <a class="tab tab--activities" href="#activities" data-tab="activities">activities</a>
       <a class="tab tab--contact" href="#contact" data-tab="contact">contact</a>
     </div>
   </div>
@@ -28,10 +59,9 @@
 
   <section class="section section--about" id="about">
     <div class="flock" data-flock="about" aria-hidden="true"></div>
-    <div class="wrap">
+    <button class="seed" type="button" data-seed="1" data-back="#f2e4e4" style="--sbot:15px;--sleft:7%;--ssize:46px;--srot:-9deg" aria-label="Fold this gum wrapper into a heart" title="fold a gum-wrapper heart — 8 folds, and it stays here"></button>
+    <div class="wrap wrap--wide">
       <div class="card card--hero">
-        <button class="crane-tab" type="button" id="open-fold" aria-label="Fold a paper crane" title="fold a paper crane"></button>
-
         <p class="eyebrow">01 / about</p>
         <p class="kicker">hi, i&rsquo;m</p>
         <h1 class="display">
@@ -40,24 +70,46 @@
 
         <div class="hero__grid">
           <div>
-            <p class="lede">[one line describing who you are]</p>
-            <p class="body">[REPLACE: 2&ndash;3 sentences about who you are &mdash; what you're studying, where you're from, what you're into outside of class.]</p>
-            <p class="body">[REPLACE: a sentence or two about what kind of work excites you.]</p>
+            <p class="lede">Statistics and machine learning student at Carnegie Mellon, with a background in agricultural genetics research.</p>
+            <p class="body">I grew up in Ames, Iowa, where I spent three years as a research intern in a plant genetics lab at Iowa State. That work taught me how much of statistics happens before any model is fit &mdash; cleaning, validating, and documenting data so the result can be trusted and repeated.</p>
+            <p class="body">At Carnegie Mellon I'm studying Statistics and Machine Learning and working as a teaching assistant for 15-112, the introductory programming course. I'm drawn to applied statistical work where the analysis informs a real decision &mdash; which plant gets bred, or which measurement can be relied on.</p>
             <p class="eyebrow eyebrow--tight">skills &amp; interests</p>
-            <ul class="tags">
-              <li class="tag tag--pink">[skill]</li>
-              <li class="tag tag--blue">[skill]</li>
-              <li class="tag tag--sage">[skill]</li>
-              <li class="tag tag--mustard">[interest]</li>
-              <li class="tag tag--pink">[interest]</li>
-            </ul>
+            <div class="tag-groups">
+              <div class="tag-group">
+                <span class="tag-group__label">languages</span>
+                <ul class="tags">
+                  <li class="tag tag--blue">Python</li>
+                  <li class="tag tag--blue">R</li>
+                  <li class="tag tag--blue">Java</li>
+                  <li class="tag tag--blue">C</li>
+                  <li class="tag tag--blue">RStudio</li>
+                  <li class="tag tag--blue">Chinese</li>
+                </ul>
+              </div>
+              <div class="tag-group">
+                <span class="tag-group__label">interests</span>
+                <ul class="tags">
+                  <li class="tag tag--mustard">plant genetics</li>
+                  <li class="tag tag--mustard">economics &amp; finance</li>
+                  <li class="tag tag--mustard">origami</li>
+                  <li class="tag tag--mustard">ultimate</li>
+                  <li class="tag tag--mustard">soccer</li>
+                </ul>
+              </div>
+              <div class="tag-group">
+                <span class="tag-group__label">orgs</span>
+                <ul class="tags">
+                  <li class="tag tag--pink">FIRST</li>
+                  <li class="tag tag--pink">4-H</li>
+                </ul>
+              </div>
+            </div>
           </div>
 
           <figure class="photo">
             <div class="photo__frame">
-              <img src="images/profile-placeholder.svg" alt="Portrait of Meabh Hennessy" />
+              <img src="images/portrait.jpeg" alt="Portrait of Meabh Hennessy" style="object-position:50% 30%" />
             </div>
-            <figcaption class="photo__caption">[caption]</figcaption>
           </figure>
         </div>
       </div>
@@ -66,52 +118,108 @@
 
   <section class="section section--timeline" id="timeline">
     <div class="flock" data-flock="timeline" aria-hidden="true"></div>
-    <div class="wrap">
+    <button class="seed" type="button" data-seed="2" data-back="#e2ece3" style="--sbot:14px;--sleft:89%;--ssize:40px;--srot:11deg" aria-label="Fold this gum wrapper into a heart" title="fold a gum-wrapper heart — 8 folds, and it stays here"></button>
+    <div class="wrap wrap--widest">
       <div class="card card--intro card--tilt-b">
         <p class="eyebrow">02 / timeline</p>
-        <h2 class="heading">[section heading]</h2>
-        <p class="body body--sm">[REPLACE: one line framing the work.]</p>
+        <h2 class="heading">Research, teaching, and leadership</h2>
+        <p class="body body--sm">Two research positions, a teaching role, and four years of robotics leadership.</p>
         <p class="note">hover a marker to peek &middot; click to pin it open</p>
       </div>
 
       <ol class="rail">
-        <li class="rail__entry" data-kind="research">
+        <li class="rail__entry" data-kind="leadership">
           <div class="rail__slot rail__slot--top">
             <article class="tl-card">
-              <p class="tl-card__dates">[dates]</p>
-              <h3 class="tl-card__role">[role title]</h3>
-              <p class="tl-card__org">[lab or department]</p>
-              <span class="award">[award, if any]</span>
+              <p class="tl-card__dates">2022 &mdash; 2025</p>
+              <h3 class="tl-card__role">Fundraising Manager</h3>
+              <p class="tl-card__org">FIRST Robotics #3928, Team Neutrino 4-H</p>
+              <span class="award">Regional Engineering Inspiration, 2024 + 2025</span>
               <button class="tl-toggle" type="button" aria-expanded="false"><span>more detail</span></button>
               <div class="tl-card__detail">
                 <ul>
-                  <li>[REPLACE: what you did.]</li>
-                  <li>[REPLACE: what it produced.]</li>
+                  <li>Led a ten-person fundraising subteam.</li>
+                  <li>$100,000+ raised across two seasons.</li>
+                  <li>110% of our goal.</li>
+                  <li>Wrote the grant applications and funding reports.</li>
+                  <li>Sponsor communications.</li>
+                  <li>Java on the controls subteam.</li>
                 </ul>
               </div>
             </article>
           </div>
-          <button class="rail__mark" type="button" aria-expanded="false" aria-label="[role title], [dates]">
+          <button class="rail__mark" type="button" aria-expanded="false" aria-label="Fundraising Manager, 2022 &mdash; 2025">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><polygon points="12,4 20,19 4,19" /></svg>
+          </button>
+          <div class="rail__slot rail__slot--bottom"></div>
+        </li>
+
+        <li class="rail__entry" data-kind="research">
+          <div class="rail__slot rail__slot--top"></div>
+          <button class="rail__mark" type="button" aria-expanded="false" aria-label="Research Intern, 2023 &mdash; 2025">
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="7" /></svg>
+          </button>
+          <div class="rail__slot rail__slot--bottom">
+            <article class="tl-card">
+              <p class="tl-card__dates">2023 &mdash; 2025</p>
+              <h3 class="tl-card__role">Research Intern</h3>
+              <p class="tl-card__org">Jianming Yu Lab, Agronomy, Iowa State</p>
+              <span class="award">1st Place, ISU Plant Breeding Symposium</span>
+              <button class="tl-toggle" type="button" aria-expanded="false"><span>more detail</span></button>
+              <div class="tl-card__detail">
+                <ul>
+                  <li>Built a keypoint classification system.</li>
+                  <li>Scored how well an automated rig measured maize leaf angles.</li>
+                  <li>ANOVA, regression, Tukey&rsquo;s HSD in R.</li>
+                  <li>All figures and visualisations.</li>
+                  <li>Presented at five research events.</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </li>
+
+        <li class="rail__entry" data-kind="leadership">
+          <div class="rail__slot rail__slot--top">
+            <article class="tl-card">
+              <p class="tl-card__dates">2024</p>
+              <h3 class="tl-card__role">Finance Lead + Co-Founder</h3>
+              <p class="tl-card__org">FIRST LEGO League Blastoff! 4-H</p>
+              <span class="award">Iowa 4-H Contributing Youth Award</span>
+              <button class="tl-toggle" type="button" aria-expanded="false"><span>more detail</span></button>
+              <div class="tl-card__detail">
+                <ul>
+                  <li>Co-founded the camp.</li>
+                  <li>75+ young people introduced to coding and robotics.</li>
+                  <li>20+ volunteers on staff.</li>
+                  <li>$2,000 raised to run it.</li>
+                  <li>Grants and community partnerships.</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+          <button class="rail__mark" type="button" aria-expanded="false" aria-label="Finance Lead + Co-Founder, 2024">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><polygon points="12,4 20,19 4,19" /></svg>
           </button>
           <div class="rail__slot rail__slot--bottom"></div>
         </li>
 
         <li class="rail__entry" data-kind="teaching">
           <div class="rail__slot rail__slot--top"></div>
-          <button class="rail__mark" type="button" aria-expanded="false" aria-label="[role title], [dates]">
+          <button class="rail__mark" type="button" aria-expanded="false" aria-label="Teaching Assistant, Jan 2026 &mdash; now">
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" /></svg>
           </button>
           <div class="rail__slot rail__slot--bottom">
             <article class="tl-card">
-              <p class="tl-card__dates">[dates]</p>
-              <h3 class="tl-card__role">[role title]</h3>
-              <p class="tl-card__org">[course or department]</p>
+              <p class="tl-card__dates">Jan 2026 &mdash; now</p>
+              <h3 class="tl-card__role">Teaching Assistant</h3>
+              <p class="tl-card__org">15-112 Fundamentals of Programming, CMU</p>
               <button class="tl-toggle" type="button" aria-expanded="false"><span>more detail</span></button>
               <div class="tl-card__detail">
                 <ul>
-                  <li>[REPLACE: responsibility.]</li>
-                  <li>[REPLACE: responsibility.]</li>
+                  <li>Office hours: Python, program design, debugging.</li>
+                  <li>Co-teach recitations of 30+ students.</li>
+                  <li>Grade code for correctness and style.</li>
                 </ul>
               </div>
             </article>
@@ -121,64 +229,24 @@
         <li class="rail__entry" data-kind="research">
           <div class="rail__slot rail__slot--top">
             <article class="tl-card">
-              <p class="tl-card__dates">[dates]</p>
-              <h3 class="tl-card__role">[role title]</h3>
-              <p class="tl-card__org">[lab or department]</p>
-              <span class="award">[award, if any]</span>
+              <p class="tl-card__dates">May 2026 &mdash; now</p>
+              <h3 class="tl-card__role">Undergraduate Research Assistant</h3>
+              <p class="tl-card__org">Jianming Yu Lab, Agronomy, Iowa State</p>
+              <span class="award">poster presented, manuscript in progress</span>
               <button class="tl-toggle" type="button" aria-expanded="false"><span>more detail</span></button>
               <div class="tl-card__detail">
                 <ul>
-                  <li>[REPLACE: methods and tools.]</li>
-                  <li>[REPLACE: result or output.]</li>
+                  <li>Scaling a published chromosome-size analysis.</li>
+                  <li>68 genomes to roughly 1,000.</li>
+                  <li>NCBI RefSeq data.</li>
+                  <li>Reproducible R workflows.</li>
+                  <li>Cleaning, integration, and validation.</li>
                 </ul>
               </div>
             </article>
           </div>
-          <button class="rail__mark" type="button" aria-expanded="false" aria-label="[role title], [dates]">
+          <button class="rail__mark" type="button" aria-expanded="false" aria-label="Undergraduate Research Assistant, May 2026 &mdash; now">
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="7" /></svg>
-          </button>
-          <div class="rail__slot rail__slot--bottom"></div>
-        </li>
-
-        <li class="rail__entry" data-kind="leadership">
-          <div class="rail__slot rail__slot--top"></div>
-          <button class="rail__mark" type="button" aria-expanded="false" aria-label="[role title], [dates]">
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><polygon points="12,4 20,19 4,19" /></svg>
-          </button>
-          <div class="rail__slot rail__slot--bottom">
-            <article class="tl-card">
-              <p class="tl-card__dates">[dates]</p>
-              <h3 class="tl-card__role">[role title]</h3>
-              <p class="tl-card__org">[organization]</p>
-              <span class="award">[award, if any]</span>
-              <button class="tl-toggle" type="button" aria-expanded="false"><span>more detail</span></button>
-              <div class="tl-card__detail">
-                <ul>
-                  <li>[REPLACE: what you led.]</li>
-                  <li>[REPLACE: outcome.]</li>
-                </ul>
-              </div>
-            </article>
-          </div>
-        </li>
-
-        <li class="rail__entry" data-kind="leadership">
-          <div class="rail__slot rail__slot--top">
-            <article class="tl-card">
-              <p class="tl-card__dates">[dates]</p>
-              <h3 class="tl-card__role">[role title]</h3>
-              <p class="tl-card__org">[organization]</p>
-              <button class="tl-toggle" type="button" aria-expanded="false"><span>more detail</span></button>
-              <div class="tl-card__detail">
-                <ul>
-                  <li>[REPLACE: what you built.]</li>
-                  <li>[REPLACE: scale or impact.]</li>
-                </ul>
-              </div>
-            </article>
-          </div>
-          <button class="rail__mark" type="button" aria-expanded="false" aria-label="[role title], [dates]">
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><polygon points="12,4 20,19 4,19" /></svg>
           </button>
           <div class="rail__slot rail__slot--bottom"></div>
         </li>
@@ -194,43 +262,112 @@
 
   <section class="section section--projects" id="projects">
     <div class="flock" data-flock="projects" aria-hidden="true"></div>
+    <button class="seed" type="button" data-seed="3" data-back="#f5e9cd" style="--sbot:14px;--sleft:11%;--ssize:44px;--srot:-6deg" aria-label="Fold this gum wrapper into a heart" title="fold a gum-wrapper heart — 8 folds, and it stays here"></button>
     <div class="wrap">
       <div class="projects__head">
         <div class="card card--intro card--tilt-b">
           <p class="eyebrow">03 / projects</p>
-          <h2 class="heading">[section heading]</h2>
-          <p class="body body--sm">[REPLACE: one line about the projects.]</p>
+          <h2 class="heading">Selected projects</h2>
+          <p class="body body--sm">Research projects, plus the site you're reading.</p>
         </div>
       </div>
 
       <div class="grid">
         <article class="card card--project card--tilt-a">
-          <span class="award award--corner">[award tag, or delete]</span>
-          <div class="shot"><img src="images/project-placeholder.svg" alt="[project name] screenshot" /></div>
+          <span class="award award--corner">manuscript in progress</span>
+          <div class="shot"><img src="images/proj-chromosome.jpeg" alt="Meabh presenting the chromosome-size research poster at the ISU symposium" style="object-position:50% 40%" /></div>
           <div class="card--project__text">
-            <p class="note">[01 &middot; stack]</p>
-            <h3 class="title">[project name]</h3>
-            <p class="body body--sm">[REPLACE: what this project is and what you built it with.]</p>
+            <p class="note">01 &middot; R, NCBI RefSeq</p>
+            <h3 class="title">Chromosome Size Variation Across Eukaryotic Genomes</h3>
+            <p class="body body--sm">Scaling a published analysis of 68 genomes to roughly 1,000, with reproducible R pipelines for cleaning, integrating, and validating genomic and taxonomic data.</p>
           </div>
         </article>
 
         <article class="card card--project card--tilt-b card--offset">
-          <div class="shot"><img src="images/project-placeholder.svg" alt="[project name] screenshot" /></div>
+          <span class="award award--corner award--corner-right">1st place, ISU symposium</span>
+          <div class="shot"><img src="images/proj-phenobot.jpeg" alt="PhenoBot imaging rig in a maize field" style="object-position:18% 10%" /></div>
           <div class="card--project__text">
-            <p class="note">[02 &middot; stack]</p>
-            <h3 class="title">[project name]</h3>
-            <p class="body body--sm">[REPLACE: short description.]</p>
+            <p class="note">02 &middot; Python, R</p>
+            <h3 class="title">Validating Automated Maize Leaf-Angle Measurement</h3>
+            <p class="body body--sm">A keypoint classification system that evaluates the accuracy of an image-based measurement pipeline, tested with ANOVA, regression, and Tukey's HSD.</p>
           </div>
         </article>
 
         <article class="card card--project card--tilt-c card--offset-lg">
-          <div class="shot"><img src="images/project-placeholder.svg" alt="[project name] screenshot" /></div>
+          <div class="shot"><img src="images/proj-website.jpeg" alt="A folded paper crane hanging beside paper chains" style="object-position:58% 38%" /></div>
           <div class="card--project__text">
-            <p class="note">[03 &middot; stack]</p>
-            <h3 class="title">[project name]</h3>
-            <p class="body body--sm">[REPLACE: short description.]</p>
+            <p class="note">03 &middot; HTML, CSS, JavaScript</p>
+            <h3 class="title">This Portfolio Site</h3>
+            <p class="body body--sm">Built by hand without frameworks. The paper cards are CSS transforms, and the four paper squares tucked into the margins fold into gum-wrapper hearts using reflection geometry computed in JavaScript — each heart stays where its square was.</p>
           </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--activities" id="activities">
+    <div class="flock" data-flock="activities" aria-hidden="true"></div>
+    <button class="seed" type="button" data-seed="4" data-back="#e0eaf4" style="--sbot:17px;--sleft:82%;--ssize:42px;--srot:13deg" aria-label="Fold this gum wrapper into a heart" title="fold a gum-wrapper heart — 8 folds, and it stays here"></button>
+    <div class="wrap wrap--wide">
+      <div class="activities__head">
+        <div>
+          <p class="eyebrow">04 / activities</p>
+          <h2 class="heading">Outside the lab</h2>
+        </div>
+        <p class="note">hover an image for the detail</p>
+      </div>
+
+      <div class="act-grid">
+        <figure class="act-tile act-tile--a">
+          <div class="act-tile__frame">
+            <img src="images/act-soccer.jpeg" alt="Playing varsity soccer for Ames High School" style="object-position:55% 50%" />
+            <div class="act-reveal" aria-hidden="true">
+              <span class="act-reveal__title">Soccer</span>
+              <span class="act-reveal__body">Varsity soccer at Ames High School, 2022&ndash;2025.</span>
+            </div>
+          </div>
+          <button class="act-info" type="button" aria-expanded="false" aria-label="Show detail about Soccer">i</button>
+        </figure>
+        <figure class="act-tile act-tile--b">
+          <div class="act-tile__frame">
+            <img src="images/act-volunteering.jpeg" alt="Volunteering at the Iowa State Games volleyball venue" style="object-position:30% 40%" />
+            <div class="act-reveal" aria-hidden="true">
+              <span class="act-reveal__title">State Games volunteering</span>
+              <span class="act-reveal__body">Volunteering with the soccer competition at the Iowa State Games.</span>
+            </div>
+          </div>
+          <button class="act-info" type="button" aria-expanded="false" aria-label="Show detail about State Games volunteering">i</button>
+        </figure>
+        <figure class="act-tile act-tile--c">
+          <div class="act-tile__frame">
+            <img src="images/act-ultimate.jpeg" alt="Money Mellons ultimate frisbee banner on the CMU lawn" />
+            <div class="act-reveal" aria-hidden="true">
+              <span class="act-reveal__title">Ultimate</span>
+              <span class="act-reveal__body">Money Mellons &mdash; Carnegie Mellon's women's ultimate club.</span>
+            </div>
+          </div>
+          <button class="act-info" type="button" aria-expanded="false" aria-label="Show detail about Ultimate">i</button>
+        </figure>
+        <figure class="act-tile act-tile--a">
+          <div class="act-tile__frame">
+            <img src="images/act-mentoring.jpeg" alt="Mentoring a student through a craft project" style="object-position:50% 45%" />
+            <div class="act-reveal" aria-hidden="true">
+              <span class="act-reveal__title">FIRST mentoring</span>
+              <span class="act-reveal__body">Mentoring FIRST robotics and LEGO League students, continuing the 4-H programs I grew up in.</span>
+            </div>
+          </div>
+          <button class="act-info" type="button" aria-expanded="false" aria-label="Show detail about FIRST mentoring">i</button>
+        </figure>
+        <figure class="act-tile act-tile--b">
+          <div class="act-tile__frame">
+            <img src="images/act-orchestra.jpeg" alt="After an orchestra concert, holding a carnation" style="object-position:62% 38%" />
+            <div class="act-reveal" aria-hidden="true">
+              <span class="act-reveal__title">Orchestra</span>
+              <span class="act-reveal__body">Violin, in orchestra through school.</span>
+            </div>
+          </div>
+          <button class="act-info" type="button" aria-expanded="false" aria-label="Show detail about Orchestra">i</button>
+        </figure>
       </div>
     </div>
   </section>
@@ -239,13 +376,13 @@
     <div class="flock" data-flock="contact" aria-hidden="true"></div>
     <div class="wrap">
       <div class="card card--business">
-        <p class="eyebrow">04 / contact</p>
-        <h2 class="heading">[section heading]</h2>
-        <p class="body">[REPLACE: a line inviting people to reach out.]</p>
+        <p class="eyebrow">05 / contact</p>
+        <h2 class="heading">Get in touch</h2>
+        <p class="body">I'm looking for summer internships in statistics and machine learning, and I'm always glad to talk about plant genetics or introductory programming.</p>
         <div class="contact__rows">
-          <a class="contact__row" href="mailto:[email]"><span class="contact__label">email</span><span class="contact__value">[email]</span></a>
+          <a class="contact__row" href="mailto:mhhennes@andrew.cmu.edu"><span class="contact__label">email</span><span class="contact__value">mhhennes@andrew.cmu.edu</span></a>
           <a class="contact__row" href="https://github.com/meabhhenn" target="_blank" rel="noopener"><span class="contact__label">github</span><span class="contact__value">meabhhenn</span></a>
-          <a class="contact__row" href="[linkedin url]" target="_blank" rel="noopener"><span class="contact__label">linkedin</span><span class="contact__value">[username]</span></a>
+          <a class="contact__row" href="https://www.linkedin.com/in/meabh-hennessy" target="_blank" rel="noopener"><span class="contact__label">linkedin</span><span class="contact__value">meabh-hennessy</span></a>
         </div>
       </div>
     </div>
@@ -256,14 +393,15 @@
 <footer class="footer">
   <p>&copy; 2026 Meabh Hennessy</p>
   <p>designed &amp; built by Meabh Hennessy &middot; <a href="https://github.com/meabhhenn/meabhhenn.github.io" target="_blank" rel="noopener">source on github</a></p>
+  <p class="footer__credits">Photographs are my own. Type is <a href="https://fonts.google.com/specimen/Source+Serif+4" target="_blank" rel="noopener">Source Serif 4</a>, <a href="https://fonts.google.com/specimen/Inter" target="_blank" rel="noopener">Inter</a> and <a href="https://fonts.google.com/specimen/IBM+Plex+Mono" target="_blank" rel="noopener">IBM Plex Mono</a> via Google Fonts (SIL OFL). No template. Code drafted with <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a> and edited by hand &mdash; see <a href="https://github.com/meabhhenn/meabhhenn.github.io/blob/main/PROMPTS.md" target="_blank" rel="noopener">PROMPTS.md</a>.</p>
 </footer>
 
-<div class="modal" id="fold-modal" role="dialog" aria-modal="true" aria-label="Fold a paper crane" hidden>
+<div class="modal" id="fold-modal" role="dialog" aria-modal="true" aria-label="Fold a gum-wrapper heart" hidden>
   <div class="modal__panel">
     <button class="modal__close" type="button" id="close-fold" aria-label="Close">&times;</button>
 
-    <p class="eyebrow" id="step-label">fold 1 of 12</p>
-    <p class="modal__title" id="step-title">diagonal, corner to corner</p>
+    <p class="eyebrow" id="step-label">fold 1 of 5</p>
+    <p class="modal__title" id="step-title">the top point down</p>
     <p class="body body--sm" id="step-hint">&nbsp;</p>
     <p class="note" id="fold-type">&nbsp;</p>
 
@@ -297,7 +435,7 @@
           <li><strong>let go early</strong> and it springs back</li>
           <li><strong>double-click</strong> to turn the paper over</li>
         </ul>
-        <p class="note" id="progress-text">square base at 4 &middot; bird base at 6 &middot; crane at 12</p>
+        <p class="note" id="progress-text">flat top at 1 &middot; sides in at 3 &middot; lobes at 5</p>
         <div class="progress"><div class="progress__fill" id="progress-fill"></div></div>
         <div class="modal__buttons">
           <button class="btn btn--primary" type="button" id="do-fold">fold this one for me</button>

@@ -7,7 +7,7 @@ paper cards with flat offset shadows.
 ## Files
 
 ```
-index.html            all markup, four sections + the folding-paper dialog
+index.html            all markup, five sections + the folding-paper dialog
 css/styles.css        every style; mobile-first, breakpoints at 640px and 1024px
 js/main.js            nav highlighting, name note, timeline peek/pin, fold engine
 images/               placeholder art — replace with real photos/screenshots
@@ -25,11 +25,12 @@ Anything in square brackets is a placeholder:
 - every timeline entry: `[dates]`, `[role title]`, `[lab or department]`,
   `[award, if any]`, and the two detail bullets
 - each project: `[project name]`, `[NN · stack]`, description, optional award tag
-- `[email]` and `[linkedin url]` / `[username]` in the contact card
-- `[caption]` under the portrait
+- `[linkedin url]` / `[username]` in the contact card
+- the orchestra tile's `[instrument, and how long]`
+- five square photos for the activity tiles
 
 Images: drop real files into `images/` and point the `<img src>` at them.
-Portrait is 4:5, project shots are 16:10.
+Portrait is 4:5, project shots are 16:10, activity tiles are square.
 
 ## Responsive behaviour
 
@@ -40,21 +41,24 @@ Portrait is 4:5, project shots are 16:10.
 - **≥ 1024px** — asymmetric three-column project grid (1.15fr 1fr 1fr) with a
   staggered third card; the hero fills 82vh.
 
-## The folding paper
+## The paper squares
 
-The tab on the top-right corner of the About card opens a dialog holding a
-square of paper and the traditional twelve-fold crane sequence.
+Four paper squares sit in the background shelf at the foot of the About,
+Timeline, Projects and Activities sections. Click one and a dialog opens with
+that square of paper and the five folds of a gum-wrapper heart.
 
-Folds 1–4 are computed: the engine reflects every layer across the crease line
-and clips it, so layers stack the way real paper does. Folds 5–12 are petal,
-reverse and mountain folds, which lift paper off the flat plane — a reflection
-cannot express that, so those stages carry authored geometry with a per-layer
-lift value, and the stage tilts into perspective as the folds leave flat.
+Folds 1-3 are computed: the engine reflects every layer across the crease line
+and clips it, so layers stack the way real paper does. Folds 4-5 turn paper
+behind the sheet, which a reflection cannot express, so those two stages carry
+authored geometry with a per-layer lift value.
 
 Drag the marked point onto its dashed target to commit a fold; release short of
-it and the paper springs back. Double-click turns the paper over. After the
-twelfth fold it enters free-fold mode (drag between any two points) and a
-finished crane is released into one of the section backgrounds.
+it and the paper springs back. When the fifth fold lands, the finished heart is
+drawn in place of the square that was clicked and stays there for the rest of
+the visit. Reloading the page puts the four squares back.
+
+Every square and every heart lives at z-index 1, below the z-index 2 content
+wraps, so they can never overlap text. Below 760px they are hidden.
 
 ## Accessibility notes
 
