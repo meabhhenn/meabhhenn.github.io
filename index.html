@@ -396,10 +396,7 @@
   <div class="modal__panel">
     <button class="modal__close" type="button" id="close-fold" aria-label="Close">&times;</button>
 
-    <p class="eyebrow" id="step-label">fold 1 of 5</p>
-    <p class="modal__title" id="step-title">the top point down</p>
-    <p class="body body--sm" id="step-hint">&nbsp;</p>
-    <p class="note" id="fold-type">&nbsp;</p>
+    <p class="eyebrow" id="step-label">fold 1 of 8</p>
 
     <div class="modal__body">
       <div class="stage">
@@ -425,20 +422,12 @@
       </div>
 
       <div class="modal__side">
-        <p class="eyebrow eyebrow--tight">gestures</p>
-        <ul class="gestures">
-          <li><strong>pull</strong> the marked point onto its target</li>
-          <li><strong>let go early</strong> and it springs back</li>
-          <li><strong>double-click</strong> to turn the paper over</li>
-        </ul>
-        <p class="note" id="progress-text">flat top at 1 &middot; sides in at 3 &middot; lobes at 5</p>
         <div class="progress"><div class="progress__fill" id="progress-fill"></div></div>
         <div class="modal__buttons">
-          <button class="btn btn--primary" type="button" id="do-fold">fold this one for me</button>
-          <button class="btn" type="button" id="step-back">back a fold</button>
-          <button class="btn btn--quiet" type="button" id="start-over">start over</button>
+          <button class="btn btn--primary" type="button" id="do-fold">fold</button>
+          <button class="btn btn--quiet" type="button" id="step-back" aria-label="Back a fold">back</button>
+          <button class="btn btn--quiet" type="button" id="start-over" aria-label="Start over">reset</button>
         </div>
-        <p class="note note--sage" id="free-note" hidden>Free-folding now: drag from any point on the paper to any other and it creases there.</p>
       </div>
     </div>
   </div>
