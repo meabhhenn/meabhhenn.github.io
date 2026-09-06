@@ -6,14 +6,12 @@
   Tool: Claude (claude.ai), used in conversation across several sittings.
   Full prompt log: PROMPTS.md in this repository.
 
-  How I used it. I wrote the brief and made every design and content decision:
-  the Mondrian-collage layout, the paper-card treatment, the type pairing, the
-  section colours, which experience goes on the timeline, and the gum-wrapper
-  heart as the interactive feature. I described what I wanted and used AI to
+  How I used it: I wrote brief intro + motivation, I also sent inspo designs drawn up by me. The design brief follows:
+  the Mondrian-collage layout, the paper-card treatment, the font type matches,
+  section colours, timeline design choice, and the gum-wrapper hearts
+  for the interactive feature. I described what I wanted and used AI to
   draft the HTML/CSS/JS, then read it back and sent it round again where it was
-  wrong — the fold sequence was rebuilt three times because the AI kept folding
-  a square, and I had to give it the real eight-step method (four corners in,
-  centre crease, open, then each half up) before it was right.
+  wrong, e.g. the fold sequence was rebuilt many times because my prompts we're too vague for the concept.
 
   What I changed by hand after AI drafts: the fold geometry and step wording,
   the timeline copy (cut to short bullets), the skill grouping and colour
@@ -27,7 +25,8 @@
 
   CREDITS
   All photographs are my own. Fonts are Source Serif 4, Inter and IBM Plex Mono,
-  served from Google Fonts under the SIL Open Font License. No template used.
+  served from Google Fonts under the SIL Open Font License. No template used. I gave one reference webiste for the 
+  AI to see what the background would be structured as: teamneutrino.org.
 -->
 <html lang="en">
 <head>
@@ -276,6 +275,7 @@
             <p class="note">01 &middot; R, NCBI RefSeq</p>
             <h3 class="title">Chromosome Size Variation Across Eukaryotic Genomes</h3>
             <p class="body body--sm">Scaling a published analysis of 68 genomes to roughly 1,000, with reproducible R pipelines for cleaning, integrating, and validating genomic and taxonomic data.</p>
+            <p class="card__links"><a href="posters/chromosome-size-poster.pdf" target="_blank" rel="noopener">view the poster (PDF)</a></p>
           </div>
         </article>
 
@@ -285,7 +285,8 @@
           <div class="card--project__text">
             <p class="note">02 &middot; Python, R</p>
             <h3 class="title">Validating Automated Maize Leaf-Angle Measurement</h3>
-            <p class="body body--sm">A keypoint classification system that evaluates the accuracy of an image-based measurement pipeline, tested with ANOVA, regression, and Tukey's HSD.</p>
+            <p class="body body--sm">A keypoint classification system that evaluates the accuracy of an image-based measurement pipeline, tested with ANOVA, regression, and Tukey's HSD.</p>            
+            <p class="card__links"><a href="posters/leaf-angle-poster.pdf" target="_blank" rel="noopener">view the poster (PDF)</a></p>
           </div>
         </article>
 
@@ -294,7 +295,8 @@
           <div class="card--project__text">
             <p class="note">03 &middot; HTML, CSS, JavaScript</p>
             <h3 class="title">This Portfolio Site</h3>
-            <p class="body body--sm">Built by hand without frameworks. The paper cards are CSS transforms, and the four paper squares tucked into the margins fold into gum-wrapper hearts using reflection geometry computed in JavaScript — each heart stays where its square was.</p>
+            <p class="body body--sm">The paper cards are CSS transforms, and the four paper squares tucked into the margins fold into gum-wrapper hearts using reflection geometry computed in JavaScript.</p>            
+            <p class="card__links"><a href="https://github.com/meabhhenn/meabhhenn.github.io" target="_blank" rel="noopener">view the code</a></p>
           </div>
         </article>
       </div>
