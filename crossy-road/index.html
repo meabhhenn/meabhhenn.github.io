@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Swing Set Dash</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Three.js as an ES module via import map (no build step) -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="game-root">
+    <canvas id="game-canvas"></canvas>
+
+    <!-- HUD -->
+    <div id="hud">
+      <div id="score">0</div>
+    </div>
+
+    <!-- Start / Game Over overlay -->
+    <div id="overlay" class="overlay">
+      <div class="overlay-card">
+        <h1 id="overlay-title">Swing Set Dash</h1>
+        <p id="overlay-msg">Dodge the swinging kids and get as far as you can!</p>
+        <p class="controls-hint">
+          <span class="kbd">↑</span><span class="kbd">↓</span><span class="kbd">←</span><span class="kbd">→</span>
+          or swipe to move
+        </p>
+        <button id="start-btn">Play</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

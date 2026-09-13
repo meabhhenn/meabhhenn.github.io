@@ -1,0 +1,144 @@
+:root {
+  --sky-top: #8fd3ff;
+  --sky-bottom: #d8f3ff;
+  --ui-font: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: var(--ui-font);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+}
+
+#game-root {
+  position: fixed;
+  inset: 0;
+}
+
+#game-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* HUD */
+#hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 18px 24px;
+  pointer-events: none;
+}
+
+#score {
+  font-size: clamp(32px, 7vw, 64px);
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.25), 0 0 18px rgba(0, 0, 0, 0.15);
+  letter-spacing: 1px;
+}
+
+/* Overlay */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 30, 45, 0.35);
+  backdrop-filter: blur(3px);
+  transition: opacity 0.25s ease;
+}
+
+.overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.overlay-card {
+  background: #fff8ec;
+  border: 6px solid #ffcf5c;
+  border-radius: 22px;
+  padding: 28px 34px;
+  text-align: center;
+  max-width: 88vw;
+  width: 380px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+}
+
+#overlay-title {
+  font-size: clamp(28px, 6vw, 40px);
+  color: #ff7a4d;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+#overlay-msg {
+  font-size: 16px;
+  color: #5a4a3a;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.controls-hint {
+  font-size: 14px;
+  color: #7a6a58;
+  margin-bottom: 20px;
+}
+
+.kbd {
+  display: inline-block;
+  min-width: 26px;
+  padding: 3px 7px;
+  margin: 0 2px;
+  background: #fff;
+  border: 2px solid #d8c4a0;
+  border-radius: 7px;
+  font-weight: 700;
+  color: #6a5a48;
+}
+
+#start-btn {
+  font-family: var(--ui-font);
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  background: #4cc36a;
+  border: none;
+  border-bottom: 5px solid #37a253;
+  border-radius: 14px;
+  padding: 12px 40px;
+  cursor: pointer;
+  transition: transform 0.08s ease, filter 0.15s ease;
+}
+
+#start-btn:hover { filter: brightness(1.05); }
+#start-btn:active { transform: translateY(2px); border-bottom-width: 3px; }
+
+/* subtle screen flash used on death */
+#game-root.hit-flash::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 90, 70, 0.35);
+  pointer-events: none;
+  animation: flash 0.3s ease-out;
+}
+
+@keyframes flash {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
