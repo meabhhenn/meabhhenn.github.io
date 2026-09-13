@@ -17,10 +17,11 @@ export const SAFE_ROWS_AT_START = 4; // grass rows before the corridor begins
 // own fixed lane, each rolling its own swings independently.
 export const BAR_LANES = [-3, 0, 3];
 
-// Fraction of corridor rows that get the bar structure at all (per bar lane).
-// Rows without a bar are plain grass on that lane. Every row that DOES get a
-// bar also gets a swing.
-export const BAR_ROW_CHANCE = 0.34;
+// Bars/swings generate as multi-row SETS per lane, not one-off standalone
+// rows: a set shares one continuous bar across several consecutive rows.
+export const SET_START_CHANCE = 0.35; // chance a lane starts a new set on a given grass row
+export const SET_MIN_LENGTH = 3;      // a set spans this many consecutive rows, sharing one bar
+export const SET_MAX_LENGTH = 6;
 
 // Of the rows that get a bar, the fraction whose swing is unoccupied (an empty
 // seat that hangs straight down and permanently blocks that bar's lane).

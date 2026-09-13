@@ -5,7 +5,9 @@ import {
   HALF_LANES,
   SAFE_ROWS_AT_START,
   BAR_LANES,
-  BAR_ROW_CHANCE,
+  SET_START_CHANCE,
+  SET_MIN_LENGTH,
+  SET_MAX_LENGTH,
   EMPTY_SWING_CHANCE,
   BUSH_ROW_CHANCE,
   SWING,
@@ -18,7 +20,6 @@ import { randRange, pick, clamp } from "./utils.js";
 
 const ROW_WIDTH = (LANES + 4) * TILE;   // ground strip is a bit wider than playable lanes
 const BAR_Y = SWING.chainLength + 1.6;  // constant height of every bar / pivot
-const LEG_EVERY = 3;                    // an A-frame leg pair every N corridor rows (per bar)
 
 // One swing hanging from a fixed bar lane in a single row.
 // It sweeps LEFT-RIGHT across its bar's lane by rotating the whole
@@ -114,39 +115,57 @@ class Swing {
 }
 
 // A row is one grid step forward. Rows past the intro are corridor rows; each
-// corridor row builds a segment of each of the continuous bars (and legs at
-// intervals), and each bar lane may or may not carry a swing.
+// corridor row builds a segment of each active bar SET (a run of consecutive
+// rows sharing one continuous bar on a lane), and each bar lane may or may not
+// be mid-set on this row.
 export class Row {
-  constructor(index, incomingRunLengths = {}) {
+  constructor(index, laneRunState = {}) {
     this.index = index;
     this.group = new THREE.Group();
     this.group.position.z = -index * TILE;
     this.bars = [];
     this.isCorridor = false;
     this.bushLane = null;
-    this.runLengthsOut = {};
+    this.laneRunStateOut = {};
 
     this.buildGround();
-
-    // Default: every bar lane's run resets to 0 unless this row extends it.
-    BAR_LANES.forEach((l) => (this.runLengthsOut[l] = 0));
 
     if (index > SAFE_ROWS_AT_START) {
       this.isCorridor = true;
 
-      // Each bar lane independently either has NO bar (plain grass on that
-      // lane) or a bar WITH a swing. The bar itself is what gets rolled; a
-      // bar never hangs empty.
+      // Each bar lane independently continues an in-progress set, or rolls to
+      // start a new one, or stays plain grass on this lane this row.
       for (const lane of BAR_LANES) {
-        if (Math.random() < BAR_ROW_CHANCE) {
-          const runPosition = (incomingRunLengths[lane] || 0) + 1;
-          this.buildBarSegment(lane, runPosition);
+        let state = laneRunState[lane] || { remaining: 0, total: 0 };
+
+        if (state.remaining <= 0) {
+          if (Math.random() < SET_START_CHANCE) {
+            const length =
+              SET_MIN_LENGTH +
+              Math.floor(Math.random() * (SET_MAX_LENGTH - SET_MIN_LENGTH + 1));
+            state = { remaining: length, total: length };
+          } else {
+            state = { remaining: 0, total: 0 };
+          }
+        }
+
+        if (state.remaining > 0) {
+          // This row is part of an active set: legs only at the very first
+          // and very last row of the set — a real shared bar with end
+          // supports, not one every N rows.
+          const isFirst = state.remaining === state.total;
+          const isLast = state.remaining === 1;
+          this.buildBarSegment(lane, isFirst || isLast);
+
           const occupied = Math.random() >= EMPTY_SWING_CHANCE;
           const swing = new Swing(pick(COLORS.npc), occupied, lane * TILE);
           this.group.add(swing.group);
           this.bars.push(swing);
-          this.runLengthsOut[lane] = runPosition;
+
+          state = { remaining: state.remaining - 1, total: state.total };
         }
+
+        this.laneRunStateOut[lane] = state;
       }
 
       // Independently, a corridor row may get exactly one bush, kept out of
@@ -194,10 +213,10 @@ export class Row {
   }
 
   // Build this row's slice of one continuous straight bar on the given lane,
-  // plus an A-frame leg pair at intervals. Each bar is one unbroken straight
-  // line at constant lane (laneX) and constant height (BAR_Y) down the whole
-  // corridor.
-  buildBarSegment(lane, runPosition) {
+  // plus an A-frame leg pair at the ends of a set. Each bar is one unbroken
+  // straight line at constant lane (laneX) and constant height (BAR_Y) for the
+  // length of its set.
+  buildBarSegment(lane, needsLegs) {
     const laneX = lane * TILE;
 
     // faint tint on the bar's lane so the corridor reads as a path
@@ -222,11 +241,11 @@ export class Row {
     barSeg.castShadow = true;
     this.group.add(barSeg);
 
-    // A-frame leg pair at intervals: two legs meeting near the top (peaked-tent
-    // silhouette end-on), splayed only in X. Z splay kept tiny so the frame
-    // never reaches into the neighboring rows. The FIRST row of every bar run
-    // always gets legs, guaranteeing the bar is never left floating unsupported.
-    if (runPosition === 1 || runPosition % LEG_EVERY === 0) {
+    // A-frame leg pair at the ends of a set: two legs meeting near the top
+    // (peaked-tent silhouette end-on), splayed only in X. Z splay kept tiny so
+    // the frame never reaches into the neighboring rows. Only the first and
+    // last row of a set get legs — a real shared bar with end supports.
+    if (needsLegs) {
       const legLen = BAR_Y + 1.2;
       const legGeo = new THREE.BoxGeometry(0.16, legLen, 0.16);
       const zSplay = TILE * 0.2; // < 1/4 TILE, stays inside this row
@@ -270,8 +289,8 @@ export class World {
     this.rows = [];
     this.nextRowIndex = 0;
     this.time = 0;
-    this.barRunLengths = {};
-    BAR_LANES.forEach((l) => (this.barRunLengths[l] = 0));
+    this.laneRunState = {};
+    BAR_LANES.forEach((l) => (this.laneRunState[l] = { remaining: 0, total: 0 }));
   }
 
   reset() {
@@ -279,15 +298,15 @@ export class World {
     this.rows = [];
     this.nextRowIndex = 0;
     this.time = 0;
-    this.barRunLengths = {};
-    BAR_LANES.forEach((l) => (this.barRunLengths[l] = 0));
+    this.laneRunState = {};
+    BAR_LANES.forEach((l) => (this.laneRunState[l] = { remaining: 0, total: 0 }));
     for (let i = 0; i < 24; i++) this.addRow();
   }
 
   addRow() {
-    const row = new Row(this.nextRowIndex++, this.barRunLengths);
+    const row = new Row(this.nextRowIndex++, this.laneRunState);
     BAR_LANES.forEach((l) => {
-      this.barRunLengths[l] = row.runLengthsOut[l];
+      this.laneRunState[l] = row.laneRunStateOut[l];
     });
     this.rows.push(row);
     this.container.add(row.group);
