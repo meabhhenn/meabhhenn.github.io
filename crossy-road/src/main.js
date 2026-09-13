@@ -80,6 +80,10 @@ function updateCamera(dt, immediate = false) {
 
 let running = false;
 
+// Death knockdown animation state. When active, tick() keeps running and
+// topples the player over before showing the game-over overlay.
+const deathAnim = { active: false, t: 0, duration: 0.6 };
+
 function handleMove(dLane, dRow) {
   if (!running) return;
   player.tryMove(dLane, dRow);
@@ -150,8 +154,7 @@ function playDeathReaction() {
   // force reflow so the animation can restart
   void gameRoot.offsetWidth;
   gameRoot.classList.add("hit-flash");
-  // little visual: player pops out of existence with a squash
-  player.body.visible = false;
+  // body stays visible, fallen over, under the overlay (see deathAnim in tick)
 }
 
 function startGame() {
@@ -166,7 +169,6 @@ function startGame() {
 
 function gameOver() {
   running = false;
-  playDeathReaction();
   best = Math.max(best, score);
   overlayTitle.textContent = "Ouch!";
   overlayMsg.innerHTML = `You got <b>${score}</b> rows in.<br/>Best: <b>${best}</b>`;
@@ -192,7 +194,23 @@ function tick() {
     // but also check during the hop so fast swings still catch you fairly.
     if (world.checkCollision(player.row, player.worldX) && player.alive) {
       player.alive = false;
-      gameOver();
+      // start the knockdown; keep running so tick() animates the topple
+      deathAnim.active = true;
+      deathAnim.t = 0;
+      playDeathReaction();
+    }
+
+    // Advance the death knockdown: topple the body over toward +z, then end.
+    if (deathAnim.active) {
+      deathAnim.t += dt;
+      const k = Math.min(deathAnim.t / deathAnim.duration, 1);
+      player.body.rotation.x = k * (Math.PI / 2);
+      player.body.visible = true;
+      if (deathAnim.t >= deathAnim.duration) {
+        deathAnim.active = false;
+        running = false;
+        gameOver();
+      }
     }
 
     updateScore();

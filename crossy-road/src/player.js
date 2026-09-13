@@ -149,6 +149,7 @@ export class Player {
     this.alive = true;
     this.maxRow = 0;
     this.body.rotation.y = 0;
+    this.body.rotation.x = 0; // reset the death-knockdown topple
     this.body.scale.set(1, 1, 1);
     this.body.visible = true;
     this.setGridPosition(0, 0);

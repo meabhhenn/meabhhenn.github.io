@@ -4,7 +4,8 @@ import {
   LANES,
   SAFE_ROWS_AT_START,
   BAR_LANE,
-  SWING_ROW_CHANCE,
+  BAR_ROW_CHANCE,
+  EMPTY_SWING_CHANCE,
   SWING,
   DIFFICULTY_PER_ROW,
   MAX_DIFFICULTY,
@@ -21,7 +22,8 @@ const LEG_EVERY = 3;                    // an A-frame leg pair every N corridor 
 // It sweeps LEFT-RIGHT across the bar's lane by rotating the whole
 // chain+seat+kid group around the Z axis. Nothing is scaled or skewed.
 class Swing {
-  constructor(npcColor) {
+  constructor(npcColor, occupied = true) {
+    this.occupied = occupied;
     this.group = new THREE.Group();
     this.group.position.x = BAR_X; // always the bar's fixed lane
 
@@ -36,11 +38,12 @@ class Swing {
 
     const chainMat = new THREE.MeshLambertMaterial({ color: COLORS.chain });
     const chainGeo = new THREE.BoxGeometry(0.06, SWING.chainLength, 0.06);
-    // two thin parallel chains, offset left/right so they frame the seat
+    // two thin parallel chains, offset along Z (the bar's own axis) so they sit
+    // close together like real chains attaching to two nearby points on the bar.
     const chainL = new THREE.Mesh(chainGeo, chainMat);
-    chainL.position.set(-0.22, -SWING.chainLength / 2, 0);
+    chainL.position.set(0, -SWING.chainLength / 2, -0.18);
     const chainR = new THREE.Mesh(chainGeo, chainMat);
-    chainR.position.set(0.22, -SWING.chainLength / 2, 0);
+    chainR.position.set(0, -SWING.chainLength / 2, 0.18);
     this.pivot.add(chainL, chainR);
 
     // flat belt-style seat. The sweep is left-right (along X, parallel to the
@@ -55,40 +58,45 @@ class Swing {
 
     // The kid: ONE rigid upright group, oriented ALONG the sweep (facing +X).
     // Vertical torso, head up, legs extended along +X (parallel to the bar).
-    const kid = new THREE.Group();
-    const bodyMat = new THREE.MeshLambertMaterial({ color: npcColor });
-    const skin = new THREE.MeshLambertMaterial({ color: 0xffe0bd });
-    const darkMat = new THREE.MeshLambertMaterial({ color: 0x39414d });
+    // An unoccupied swing has NO kid mesh at all (empty seat only).
+    if (occupied) {
+      const kid = new THREE.Group();
+      const bodyMat = new THREE.MeshLambertMaterial({ color: npcColor });
+      const skin = new THREE.MeshLambertMaterial({ color: 0xffe0bd });
+      const darkMat = new THREE.MeshLambertMaterial({ color: 0x39414d });
 
-    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.44), bodyMat);
-    torso.position.set(0, 0.42, 0);
-    const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.4), skin);
-    head.position.set(0, 0.92, 0);
-    const hair = new THREE.Mesh(
-      new THREE.BoxGeometry(0.44, 0.14, 0.44),
-      new THREE.MeshLambertMaterial({
-        color: pick([0x5a3a2a, 0x2b2b2b, 0x8a5a2a, 0xc9a24b]),
-      })
-    );
-    hair.position.set(0, 1.14, 0);
-    // legs extended forward along +X (the direction the kid faces / swings),
-    // the two legs sitting side-by-side across the body along Z.
-    const legGeo = new THREE.BoxGeometry(0.5, 0.15, 0.15);
-    const legFront = new THREE.Mesh(legGeo, darkMat);
-    legFront.position.set(0.3, 0.14, -0.11);
-    const legBack = legFront.clone();
-    legBack.position.z = 0.11;
+      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.44), bodyMat);
+      torso.position.set(0, 0.42, 0);
+      const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.4), skin);
+      head.position.set(0, 0.92, 0);
+      const hair = new THREE.Mesh(
+        new THREE.BoxGeometry(0.44, 0.14, 0.44),
+        new THREE.MeshLambertMaterial({
+          color: pick([0x5a3a2a, 0x2b2b2b, 0x8a5a2a, 0xc9a24b]),
+        })
+      );
+      hair.position.set(0, 1.14, 0);
+      // legs extended forward along +X (the direction the kid faces / swings),
+      // the two legs sitting side-by-side across the body along Z.
+      const legGeo = new THREE.BoxGeometry(0.5, 0.15, 0.15);
+      const legFront = new THREE.Mesh(legGeo, darkMat);
+      legFront.position.set(0.3, 0.14, -0.11);
+      const legBack = legFront.clone();
+      legBack.position.z = 0.11;
 
-    kid.add(torso, head, hair, legFront, legBack);
-    kid.position.y = -SWING.chainLength + 0.05;
-    torso.castShadow = true;
-    head.castShadow = true;
-    this.pivot.add(kid);
+      kid.add(torso, head, hair, legFront, legBack);
+      kid.position.y = -SWING.chainLength + 0.05;
+      torso.castShadow = true;
+      head.castShadow = true;
+      this.pivot.add(kid);
+    }
 
     this.angle = 0;
   }
 
   update(time, difficulty) {
+    // An empty swing never moves: leave angle pinned at 0 (hangs straight down).
+    if (!this.occupied) return;
     // sweep left-right around Z
     this.angle =
       Math.sin(time * this.speed * difficulty + this.phase) * this.amplitude;
@@ -116,15 +124,15 @@ export class Row {
 
     this.buildGround();
 
-    if (index > SAFE_ROWS_AT_START) {
+    // A row past the intro either has NO bar (plain grass) or a bar WITH a
+    // swing. The bar itself is what gets rolled; a bar never hangs empty.
+    if (index > SAFE_ROWS_AT_START && Math.random() < BAR_ROW_CHANCE) {
       this.isCorridor = true;
       this.buildBarSegment();
-      // A mix of danger rows and free-pass rows.
-      if (Math.random() < SWING_ROW_CHANCE) {
-        this.swing = new Swing(pick(COLORS.npc));
-        this.group.add(this.swing.group);
-        this.hasSwing = true;
-      }
+      const occupied = Math.random() >= EMPTY_SWING_CHANCE;
+      this.swing = new Swing(pick(COLORS.npc), occupied);
+      this.group.add(this.swing.group);
+      this.hasSwing = true;
     }
   }
 
@@ -264,7 +272,7 @@ export class World {
     const row = this.getRow(playerRow);
     if (!row || !row.hasSwing) return false;
 
-    const hitRadius = SWING.seatHalfWidth + 0.3; // seat half-width + player half-width
+    const hitRadius = SWING.seatHalfWidth + 0.2; // seat half-width + player half-width (minus forgiveness)
     const dx = Math.abs(row.swing.worldSeatX() - playerWorldX);
     return dx < hitRadius;
   }

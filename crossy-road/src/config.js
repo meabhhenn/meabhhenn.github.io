@@ -16,21 +16,25 @@ export const SAFE_ROWS_AT_START = 4; // grass rows before the corridor begins
 // The single continuous bar lives at this lane for the entire corridor.
 export const BAR_LANE = 0;
 
-// Fraction of corridor rows that actually have a swing (rest are free passes).
-export const SWING_ROW_CHANCE = 0.55;
+// Fraction of corridor rows that get the bar structure at all. Rows without a
+// bar are plain grass. Every row that DOES get a bar also gets a swing.
+export const BAR_ROW_CHANCE = 0.6;
+
+// Of the rows that get a bar, the fraction whose swing is unoccupied (an empty
+// seat that hangs straight down and permanently blocks the bar's lane).
+export const EMPTY_SWING_CHANCE = 0.25;
 
 // Swing tuning. Swings sweep LEFT-RIGHT across the bar's lane by rotating
-// around the Z axis. Amplitude is capped so a swing only threatens ~one lane
-// on either side and the kid never tips past ~45 degrees from vertical.
+// around the Z axis.
 export const SWING = {
   minSpeed: 1.1,        // radians/sec (angular speed of the sweep)
   maxSpeed: 2.4,
   // Reach = chainLength * sin(amp). Longer chains => bigger swept danger zone.
-  // With chainLength 3.4, amp 0.6 rad (~34 deg) reaches ~1.9 lanes each side.
-  minAmplitude: 0.3,    // radians from vertical at the peak (~24 deg)
-  maxAmplitude: 0.9,    // radians from vertical at the peak (~34 deg)
+  // Big, energetic arcs: amp 0.5 rad (~29 deg) to 1.0 rad (~57 deg).
+  minAmplitude: 0.5,    // radians from vertical at the peak (~29 deg)
+  maxAmplitude: 1.0,    // radians from vertical at the peak (~57 deg)
   chainLength: 3.4,     // length of the swing chains in world units (long pendulum)
-  seatHalfWidth: 0.45,  // half-width of the seat/kid used for X-overlap collision
+  seatHalfWidth: 0.3,   // half-width of the seat/kid used for X-overlap collision
 };
 
 // Difficulty ramp: how much swing speed scales as you progress (per row).
