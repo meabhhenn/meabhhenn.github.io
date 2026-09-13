@@ -2,10 +2,12 @@ import * as THREE from "three";
 import {
   TILE,
   LANES,
+  HALF_LANES,
   SAFE_ROWS_AT_START,
   BAR_LANE,
   BAR_ROW_CHANCE,
   EMPTY_SWING_CHANCE,
+  BUSH_ROW_CHANCE,
   SWING,
   DIFFICULTY_PER_ROW,
   MAX_DIFFICULTY,
@@ -121,19 +123,54 @@ export class Row {
     this.swing = null;
     this.hasSwing = false;
     this.isCorridor = false;
+    this.bushLane = null;
 
     this.buildGround();
 
-    // A row past the intro either has NO bar (plain grass) or a bar WITH a
-    // swing. The bar itself is what gets rolled; a bar never hangs empty.
-    if (index > SAFE_ROWS_AT_START && Math.random() < BAR_ROW_CHANCE) {
+    if (index > SAFE_ROWS_AT_START) {
       this.isCorridor = true;
-      this.buildBarSegment();
-      const occupied = Math.random() >= EMPTY_SWING_CHANCE;
-      this.swing = new Swing(pick(COLORS.npc), occupied);
-      this.group.add(this.swing.group);
-      this.hasSwing = true;
+
+      // A corridor row either has NO bar (plain grass) or a bar WITH a swing.
+      // The bar itself is what gets rolled; a bar never hangs empty.
+      if (Math.random() < BAR_ROW_CHANCE) {
+        this.buildBarSegment();
+        const occupied = Math.random() >= EMPTY_SWING_CHANCE;
+        this.swing = new Swing(pick(COLORS.npc), occupied);
+        this.group.add(this.swing.group);
+        this.hasSwing = true;
+      }
+
+      // Independently, a corridor row may get exactly one bush in an inner lane
+      // (between the outer edges and the bar's lane) as a static, non-lethal
+      // block the player must step around.
+      if (Math.random() < BUSH_ROW_CHANCE) {
+        const innerLanes = [];
+        for (let l = -HALF_LANES + 2; l <= HALF_LANES - 2; l++) {
+          if (l !== BAR_LANE) innerLanes.push(l);
+        }
+        this.bushLane = pick(innerLanes);
+        this.buildBush(this.bushLane);
+      }
     }
+  }
+
+  // A simple squat bush: clustered green boxes, distinct from the grass color,
+  // sitting on the ground in the given lane.
+  buildBush(lane) {
+    const bush = new THREE.Group();
+    const bushMat = new THREE.MeshLambertMaterial({ color: 0x2f7d3a });
+    const blob = (w, h, d, x, y, z) => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), bushMat);
+      m.position.set(x, y, z);
+      m.castShadow = true;
+      m.receiveShadow = true;
+      bush.add(m);
+    };
+    blob(0.7, 0.5, 0.7, 0, 0.25, 0);
+    blob(0.4, 0.35, 0.4, 0.25, 0.5, 0.1);
+    blob(0.4, 0.35, 0.4, -0.2, 0.48, -0.15);
+    bush.position.set(lane * TILE, 0, 0);
+    this.group.add(bush);
   }
 
   buildGround() {
@@ -251,6 +288,12 @@ export class World {
 
   getRow(index) {
     return this.rows.find((r) => r.index === index);
+  }
+
+  // A cell is blocked (non-lethal) if a bush occupies that lane in that row.
+  isBlocked(row, lane) {
+    const r = this.getRow(row);
+    return !!r && r.bushLane === lane;
   }
 
   difficultyForRow(row) {

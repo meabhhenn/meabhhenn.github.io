@@ -86,6 +86,9 @@ const deathAnim = { active: false, t: 0, duration: 0.6 };
 
 function handleMove(dLane, dRow) {
   if (!running) return;
+  // Bushes block a cell (non-lethal): hopping into one is a no-op, like a wall.
+  const { targetLane, targetRow } = player.peekTarget(dLane, dRow);
+  if (world.isBlocked(targetRow, targetLane)) return;
   player.tryMove(dLane, dRow);
 }
 

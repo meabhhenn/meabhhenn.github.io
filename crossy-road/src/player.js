@@ -95,6 +95,14 @@ export class Player {
     this.group.position.y = 0;
   }
 
+  // Compute where a move would land, using the same clamping as tryMove, but
+  // WITHOUT mutating state or starting a hop. Used to test for blocked cells.
+  peekTarget(dLane, dRow) {
+    const targetLane = clamp(this.lane + dLane, -HALF_LANES, HALF_LANES);
+    const targetRow = Math.max(0, this.row + dRow);
+    return { targetLane, targetRow };
+  }
+
   // Queue a hop by grid delta. dLane: -1 left / +1 right. dRow: +1 forward / -1 back.
   tryMove(dLane, dRow) {
     if (this.hopping || !this.alive) return;

@@ -24,6 +24,10 @@ export const BAR_ROW_CHANCE = 0.6;
 // seat that hangs straight down and permanently blocks the bar's lane).
 export const EMPTY_SWING_CHANCE = 0.25;
 
+// Chance any given corridor row gets exactly one bush: a static, non-lethal
+// obstacle in an inner lane that the player must step around.
+export const BUSH_ROW_CHANCE = 0.25;
+
 // Swing tuning. Swings sweep LEFT-RIGHT across the bar's lane by rotating
 // around the Z axis.
 export const SWING = {
