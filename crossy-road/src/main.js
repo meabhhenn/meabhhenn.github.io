@@ -161,6 +161,7 @@ function playDeathReaction() {
 }
 
 function startGame() {
+  gameRoot.classList.remove("hit-flash");
   world.reset();
   player.reset();
   score = 0;

@@ -136,6 +136,7 @@ html, body {
   background: rgba(255, 90, 70, 0.35);
   pointer-events: none;
   animation: flash 0.3s ease-out;
+  animation-fill-mode: forwards;
 }
 
 @keyframes flash {

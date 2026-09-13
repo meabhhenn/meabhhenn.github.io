@@ -28,6 +28,17 @@ export const EMPTY_SWING_CHANCE = 0.25;
 // obstacle in an inner lane that the player must step around.
 export const BUSH_ROW_CHANCE = 0.25;
 
+// Soccer hazard: two kids kicking a ball back and forth between them, out in
+// the outer lanes on either side of the corridor.
+export const SOCCER = {
+  minSpeed: 1.4,
+  maxSpeed: 2.6,
+  ballRadius: 0.22,
+  kickHeight: 0.5,
+  hitRadius: 0.4,
+};
+export const SOCCER_ROW_CHANCE = 0.35;
+
 // Swing tuning. Swings sweep LEFT-RIGHT across the bar's lane by rotating
 // around the Z axis.
 export const SWING = {

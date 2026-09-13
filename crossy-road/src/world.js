@@ -9,6 +9,8 @@ import {
   EMPTY_SWING_CHANCE,
   BUSH_ROW_CHANCE,
   SWING,
+  SOCCER,
+  SOCCER_ROW_CHANCE,
   DIFFICULTY_PER_ROW,
   MAX_DIFFICULTY,
   COLORS,
@@ -112,11 +114,81 @@ class Swing {
   }
 }
 
+// Two kids standing on the ground kicking a ball back and forth between them.
+// Lives entirely in the outer lanes, independent of the bar/swing.
+class SoccerPair {
+  constructor(laneA, laneB) {
+    this.group = new THREE.Group();
+    this.xA = laneA * TILE;
+    this.xB = laneB * TILE;
+
+    this.speed = randRange(SOCCER.minSpeed, SOCCER.maxSpeed);
+    this.phase = Math.random() * Math.PI * 2;
+
+    const buildKid = (x, npcColor) => {
+      const kid = new THREE.Group();
+      const bodyMat = new THREE.MeshLambertMaterial({ color: npcColor });
+      const skin = new THREE.MeshLambertMaterial({ color: 0xffe0bd });
+      const darkMat = new THREE.MeshLambertMaterial({ color: 0x39414d });
+
+      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.44), bodyMat);
+      torso.position.set(0, 0.42, 0);
+      const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.4), skin);
+      head.position.set(0, 0.92, 0);
+      const hair = new THREE.Mesh(
+        new THREE.BoxGeometry(0.44, 0.14, 0.44),
+        new THREE.MeshLambertMaterial({
+          color: pick([0x5a3a2a, 0x2b2b2b, 0x8a5a2a, 0xc9a24b]),
+        })
+      );
+      hair.position.set(0, 1.14, 0);
+      // standing legs, planted straight down (no chain/seat, stands on ground)
+      const legGeo = new THREE.BoxGeometry(0.15, 0.34, 0.15);
+      const legL = new THREE.Mesh(legGeo, darkMat);
+      legL.position.set(-0.11, 0.15, 0);
+      const legR = legL.clone();
+      legR.position.x = 0.11;
+
+      kid.add(torso, head, hair, legL, legR);
+      kid.position.set(x, 0, 0);
+      torso.castShadow = true;
+      head.castShadow = true;
+      return kid;
+    };
+
+    this.kidA = buildKid(this.xA, pick(COLORS.npc));
+    this.kidB = buildKid(this.xB, pick(COLORS.npc));
+
+    this.ball = new THREE.Mesh(
+      new THREE.SphereGeometry(SOCCER.ballRadius, 12, 12),
+      new THREE.MeshLambertMaterial({ color: 0xffffff })
+    );
+    this.ball.castShadow = true;
+
+    this.group.add(this.kidA, this.kidB, this.ball);
+
+    this.ballX = this.xA;
+  }
+
+  update(time, difficulty) {
+    const tNorm = (Math.sin(time * this.speed * difficulty + this.phase) + 1) / 2;
+    this.ballX = this.xA + (this.xB - this.xA) * tNorm;
+    const bounceY =
+      Math.abs(Math.sin(time * this.speed * difficulty * 2 + this.phase)) *
+      SOCCER.kickHeight;
+    this.ball.position.set(this.ballX, SOCCER.ballRadius + bounceY, 0);
+  }
+
+  worldBallX() {
+    return this.ballX;
+  }
+}
+
 // A row is one grid step forward. Rows past the intro are corridor rows; each
 // corridor row builds a segment of the one continuous bar (and legs at
 // intervals), and may or may not carry a swing.
 export class Row {
-  constructor(index) {
+  constructor(index, incomingRunLength = 0) {
     this.index = index;
     this.group = new THREE.Group();
     this.group.position.z = -index * TILE;
@@ -124,6 +196,8 @@ export class Row {
     this.hasSwing = false;
     this.isCorridor = false;
     this.bushLane = null;
+    this.soccerLeft = null;
+    this.soccerRight = null;
 
     this.buildGround();
 
@@ -133,23 +207,32 @@ export class Row {
       // A corridor row either has NO bar (plain grass) or a bar WITH a swing.
       // The bar itself is what gets rolled; a bar never hangs empty.
       if (Math.random() < BAR_ROW_CHANCE) {
-        this.buildBarSegment();
+        const runPosition = incomingRunLength + 1;
+        this.buildBarSegment(runPosition);
         const occupied = Math.random() >= EMPTY_SWING_CHANCE;
         this.swing = new Swing(pick(COLORS.npc), occupied);
         this.group.add(this.swing.group);
         this.hasSwing = true;
       }
 
-      // Independently, a corridor row may get exactly one bush in an inner lane
-      // (between the outer edges and the bar's lane) as a static, non-lethal
-      // block the player must step around.
+      // Independently, a corridor row may get exactly one bush, kept in its
+      // own lane (-2 or 2) so it never crowds the swing frame's leg footprint.
+      // Lanes -1 and 1 stay permanently open as an obstacle-free route.
       if (Math.random() < BUSH_ROW_CHANCE) {
-        const innerLanes = [];
-        for (let l = -HALF_LANES + 2; l <= HALF_LANES - 2; l++) {
-          if (l !== BAR_LANE) innerLanes.push(l);
-        }
+        const innerLanes = [-HALF_LANES + 2, HALF_LANES - 2];
         this.bushLane = pick(innerLanes);
         this.buildBush(this.bushLane);
+      }
+
+      // Independently, the outer lanes on either side may have a soccer pair
+      // kicking a ball back and forth between them.
+      if (Math.random() < SOCCER_ROW_CHANCE) {
+        this.soccerLeft = new SoccerPair(-HALF_LANES, -HALF_LANES + 1);
+        this.group.add(this.soccerLeft.group);
+      }
+      if (Math.random() < SOCCER_ROW_CHANCE) {
+        this.soccerRight = new SoccerPair(HALF_LANES - 1, HALF_LANES);
+        this.group.add(this.soccerRight.group);
       }
     }
   }
@@ -188,7 +271,7 @@ export class Row {
   // Build this row's slice of the single continuous straight bar, plus an
   // A-frame leg pair at intervals. The bar is one unbroken straight line at
   // constant lane (BAR_X) and constant height (BAR_Y) down the whole corridor.
-  buildBarSegment() {
+  buildBarSegment(runPosition) {
     // faint tint on the bar's lane so the corridor reads as a path
     const tint = this.index % 2 === 0 ? COLORS.swingRow[0] : COLORS.swingRow[1];
     const laneStripe = new THREE.Mesh(
@@ -213,8 +296,9 @@ export class Row {
 
     // A-frame leg pair at intervals: two legs meeting near the top (peaked-tent
     // silhouette end-on), splayed only in X. Z splay kept tiny so the frame
-    // never reaches into the neighboring rows.
-    if (this.index % LEG_EVERY === 0) {
+    // never reaches into the neighboring rows. The FIRST row of every bar run
+    // always gets legs, guaranteeing the bar is never left floating unsupported.
+    if (runPosition === 1 || runPosition % LEG_EVERY === 0) {
       const legLen = BAR_Y + 1.2;
       const legGeo = new THREE.BoxGeometry(0.16, legLen, 0.16);
       const zSplay = TILE * 0.2; // < 1/4 TILE, stays inside this row
@@ -246,6 +330,8 @@ export class Row {
 
   update(time, difficulty) {
     if (this.swing) this.swing.update(time, difficulty);
+    if (this.soccerLeft) this.soccerLeft.update(time, difficulty);
+    if (this.soccerRight) this.soccerRight.update(time, difficulty);
   }
 }
 
@@ -258,6 +344,7 @@ export class World {
     this.rows = [];
     this.nextRowIndex = 0;
     this.time = 0;
+    this.barRunLength = 0;
   }
 
   reset() {
@@ -265,11 +352,13 @@ export class World {
     this.rows = [];
     this.nextRowIndex = 0;
     this.time = 0;
+    this.barRunLength = 0;
     for (let i = 0; i < 24; i++) this.addRow();
   }
 
   addRow() {
-    const row = new Row(this.nextRowIndex++);
+    const row = new Row(this.nextRowIndex++, this.barRunLength);
+    this.barRunLength = row.hasSwing ? this.barRunLength + 1 : 0;
     this.rows.push(row);
     this.container.add(row.group);
   }
@@ -304,19 +393,39 @@ export class World {
     this.time += dt;
     const difficulty = this.difficultyForRow(playerRow);
     for (const r of this.rows) {
-      if (r.hasSwing) r.update(this.time, difficulty);
+      if (r.hasSwing || r.soccerLeft || r.soccerRight) {
+        r.update(this.time, difficulty);
+      }
     }
   }
 
-  // Collision: only when the player is in the bar's lane, in a row that has a
-  // swing, and that swing's live sweep X overlaps the player. Every other lane
-  // is always safe.
+  // Collision: the player is hit if they overlap a swing's live sweep X (only
+  // possible in the bar's lane, on a row that has a swing), OR they overlap a
+  // soccer pair's ball on either side of the corridor.
   checkCollision(playerRow, playerWorldX) {
     const row = this.getRow(playerRow);
-    if (!row || !row.hasSwing) return false;
+    if (!row) return false;
 
-    const hitRadius = SWING.seatHalfWidth + 0.2; // seat half-width + player half-width (minus forgiveness)
-    const dx = Math.abs(row.swing.worldSeatX() - playerWorldX);
-    return dx < hitRadius;
+    if (row.hasSwing) {
+      const hitRadius = SWING.seatHalfWidth + 0.2; // seat half-width + player half-width (minus forgiveness)
+      const dx = Math.abs(row.swing.worldSeatX() - playerWorldX);
+      if (dx < hitRadius) return true;
+    }
+
+    if (
+      row.soccerLeft &&
+      Math.abs(row.soccerLeft.worldBallX() - playerWorldX) < SOCCER.hitRadius
+    ) {
+      return true;
+    }
+
+    if (
+      row.soccerRight &&
+      Math.abs(row.soccerRight.worldBallX() - playerWorldX) < SOCCER.hitRadius
+    ) {
+      return true;
+    }
+
+    return false;
   }
 }
