@@ -20,7 +20,7 @@ export const BAR_LANES = [-3, 0, 3];
 // Fraction of corridor rows that get the bar structure at all (per bar lane).
 // Rows without a bar are plain grass on that lane. Every row that DOES get a
 // bar also gets a swing.
-export const BAR_ROW_CHANCE = 0.44;
+export const BAR_ROW_CHANCE = 0.34;
 
 // Of the rows that get a bar, the fraction whose swing is unoccupied (an empty
 // seat that hangs straight down and permanently blocks that bar's lane).
