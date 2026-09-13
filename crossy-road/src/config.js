@@ -25,11 +25,11 @@ export const SWING_ROW_CHANCE = 0.55;
 export const SWING = {
   minSpeed: 1.1,        // radians/sec (angular speed of the sweep)
   maxSpeed: 2.4,
-  // Reach = chainLength * sin(amp). With chainLength 2.2, amp 0.6 rad (~34 deg)
-  // reaches ~1.24 lanes: roughly one lane either side and safely under 45 deg.
-  minAmplitude: 0.42,   // radians from vertical at the peak (~24 deg, ~0.9 lane)
-  maxAmplitude: 0.6,    // radians from vertical at the peak (~34 deg, ~1.2 lane)
-  chainLength: 2.2,     // length of the swing chains in world units
+  // Reach = chainLength * sin(amp). Longer chains => bigger swept danger zone.
+  // With chainLength 3.4, amp 0.6 rad (~34 deg) reaches ~1.9 lanes each side.
+  minAmplitude: 0.42,   // radians from vertical at the peak (~24 deg)
+  maxAmplitude: 0.6,    // radians from vertical at the peak (~34 deg)
+  chainLength: 3.4,     // length of the swing chains in world units (long pendulum)
   seatHalfWidth: 0.45,  // half-width of the seat/kid used for X-overlap collision
 };
 

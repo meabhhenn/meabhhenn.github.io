@@ -43,22 +43,24 @@ class Swing {
     chainR.position.set(0.22, -SWING.chainLength / 2, 0);
     this.pivot.add(chainL, chainR);
 
-    // flat belt-style seat
+    // flat belt-style seat. The sweep is left-right (along X, parallel to the
+    // bar), so the seat's long/sit axis runs along X.
     const seat = new THREE.Mesh(
-      new THREE.BoxGeometry(0.56, 0.1, 0.5),
+      new THREE.BoxGeometry(0.62, 0.1, 0.42),
       new THREE.MeshLambertMaterial({ color: 0x2f343b })
     );
     seat.position.y = -SWING.chainLength;
     seat.castShadow = true;
     this.pivot.add(seat);
 
-    // The kid: ONE rigid upright group. Vertical torso, head up, legs forward.
+    // The kid: ONE rigid upright group, oriented ALONG the sweep (facing +X).
+    // Vertical torso, head up, legs extended along +X (parallel to the bar).
     const kid = new THREE.Group();
     const bodyMat = new THREE.MeshLambertMaterial({ color: npcColor });
     const skin = new THREE.MeshLambertMaterial({ color: 0xffe0bd });
     const darkMat = new THREE.MeshLambertMaterial({ color: 0x39414d });
 
-    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.5, 0.4), bodyMat);
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.44), bodyMat);
     torso.position.set(0, 0.42, 0);
     const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.4), skin);
     head.position.set(0, 0.92, 0);
@@ -69,14 +71,15 @@ class Swing {
       })
     );
     hair.position.set(0, 1.14, 0);
-    // legs extended forward (+z), horizontal
-    const legGeo = new THREE.BoxGeometry(0.15, 0.15, 0.5);
-    const legL = new THREE.Mesh(legGeo, darkMat);
-    legL.position.set(-0.11, 0.14, 0.3);
-    const legR = legL.clone();
-    legR.position.x = 0.11;
+    // legs extended forward along +X (the direction the kid faces / swings),
+    // the two legs sitting side-by-side across the body along Z.
+    const legGeo = new THREE.BoxGeometry(0.5, 0.15, 0.15);
+    const legFront = new THREE.Mesh(legGeo, darkMat);
+    legFront.position.set(0.3, 0.14, -0.11);
+    const legBack = legFront.clone();
+    legBack.position.z = 0.11;
 
-    kid.add(torso, head, hair, legL, legR);
+    kid.add(torso, head, hair, legFront, legBack);
     kid.position.y = -SWING.chainLength + 0.05;
     torso.castShadow = true;
     head.castShadow = true;
