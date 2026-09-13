@@ -22,7 +22,7 @@ scene.fog = new THREE.Fog(COLORS.skyTop, 22, 40);
 let camera;
 function makeCamera() {
   const aspect = window.innerWidth / window.innerHeight;
-  const viewSize = 12;
+  const viewSize = CAMERA.viewSize;
   camera = new THREE.OrthographicCamera(
     -viewSize * aspect,
     viewSize * aspect,
@@ -212,7 +212,7 @@ function tick() {
 function onResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   const aspect = window.innerWidth / window.innerHeight;
-  const viewSize = 12;
+  const viewSize = CAMERA.viewSize;
   camera.left = -viewSize * aspect;
   camera.right = viewSize * aspect;
   camera.top = viewSize;

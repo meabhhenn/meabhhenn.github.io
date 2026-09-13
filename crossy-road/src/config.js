@@ -10,14 +10,25 @@ export const HOP_HEIGHT = 0.55;   // how high the player arcs during a hop
 // Rows: forward direction. Row index increases as the player advances.
 export const SAFE_ROWS_AT_START = 4; // grass rows before the first swing set
 
-// Swing tuning (randomized per swing within these ranges)
+// Swing tuning (randomized per swing within these ranges).
+// Swings arc FORWARD/BACKWARD (toward/away from the player) around the X axis.
 export const SWING = {
   minSpeed: 1.1,        // radians/sec (angular speed of the arc)
-  maxSpeed: 2.6,
-  minAmplitude: 0.55,   // radians (how far the swing arcs from vertical)
-  maxAmplitude: 1.15,
+  maxSpeed: 2.4,
+  minAmplitude: 0.85,   // radians (how far the swing arcs from vertical)
+  maxAmplitude: 1.25,
   chainLength: 2.2,     // length of the swing chains in world units
-  seatHalfWidth: 0.5,   // half-width of the seat/kid used for collision on X
+
+  // Layout along the single arched bar
+  minSwings: 4,         // number of swings hanging from one bar (randomized)
+  maxSwings: 6,
+  slotSpacing: 1.35,    // world-units between adjacent hanger slots (leaves visible gaps)
+  slotHalfWidth: 0.42,  // half-width of a swing's dangerous x-slot (< half of slotSpacing => gaps are safe)
+
+  // Hazard activation: the swing is dangerous while it has arced TOWARD the
+  // player far enough that the seat overlaps the player's row. Measured as the
+  // seat's forward reach (world units) into the row from directly-below.
+  dangerReach: 0.55,    // seat must reach at least this far toward player to hit
 };
 
 // Row generation: chance a newly generated row is a swing-set row vs grass.
@@ -27,12 +38,15 @@ export const SWING_ROW_CHANCE = 0.62;
 export const DIFFICULTY_PER_ROW = 0.004;
 export const MAX_DIFFICULTY = 1.8;
 
-// Camera framing (isometric-style follow)
+// Camera framing (isometric-style follow).
+// viewSize sets how zoomed-in the orthographic camera is: smaller => closer,
+// showing fewer rows ahead. Tuned so ~3-4 rows ahead are visible.
 export const CAMERA = {
+  viewSize: 8.5,
   distance: 11,
   height: 9,
   back: 8,      // how far behind the player (in +row lookback) the camera sits
-  lookAhead: 2, // bias the look target a little ahead of the player
+  lookAhead: 1.5, // bias the look target a little ahead of the player
 };
 
 // Bright, chunky Overcooked-ish palette
