@@ -1,7 +1,7 @@
 // Central tuning knobs for the game. Adjust here to change feel.
 
 export const TILE = 1;            // size of one grid cell in world units
-export const LANES = 9;           // number of left/right columns the player can occupy
+export const LANES = 15;          // number of left/right columns the player can occupy
 export const HALF_LANES = Math.floor(LANES / 2); // playable range is [-HALF_LANES, +HALF_LANES]
 
 export const HOP_DURATION = 0.13; // seconds for one hop animation
@@ -14,8 +14,10 @@ export const HOP_HEIGHT = 0.55;   // how high the player arcs during a hop
 export const SAFE_ROWS_AT_START = 4; // grass rows before the corridor begins
 
 // Three independent continuous bars, each running the whole corridor on its
-// own fixed lane, each rolling its own swings independently.
-export const BAR_LANES = [-3, 0, 3];
+// own fixed lane, each rolling its own swings independently. The outer two
+// sit at the far edges, giving each bar a 7-unit gap (3.5 half-gap) to its
+// neighbor — safely more than the ~2.86 max reach at full amplitude.
+export const BAR_LANES = [-7, 0, 7];
 
 // Bars/swings generate as multi-row SETS per lane, not one-off standalone
 // rows: a set shares one continuous bar across several consecutive rows.
@@ -36,12 +38,11 @@ export const BUSH_ROW_CHANCE = 0.25;
 export const SWING = {
   minSpeed: 1.1,        // radians/sec (angular speed of the sweep)
   maxSpeed: 2.4,
-  // Reach = chainLength * sin(amp). With BAR_LANES spaced 3 apart (1.5 half-gap
-  // between neighbors) and chainLength 3.4, amplitude is capped so the worst
-  // case reach (3.4 * sin(0.3) ~= 1.0) leaves a 0.5 unit buffer on each side of
-  // the midpoint between any two bars, so neighboring swings can never overlap.
-  minAmplitude: 0.18,   // radians from vertical at the peak (~10 deg)
-  maxAmplitude: 0.3,    // radians from vertical at the peak (~17 deg)
+  // Reach = chainLength * sin(amp). With BAR_LANES spaced 7 apart (3.5 half-gap
+  // between neighbors) and chainLength 3.4, big dramatic arcs (up to amp 1.0,
+  // reach ~2.86) still leave a comfortable buffer before reaching a neighbor.
+  minAmplitude: 0.5,    // radians from vertical at the peak (~29 deg)
+  maxAmplitude: 1.0,    // radians from vertical at the peak (~57 deg)
   chainLength: 3.4,     // length of the swing chains in world units (long pendulum)
   // Hitbox half-widths: an empty swing's widest point is the bare seat; an
   // occupied swing's widest point is the kid sitting on it. Not the same width.
@@ -60,7 +61,7 @@ export const MAX_DIFFICULTY = 1.8;
 // tuned here; the follow logic lives in main.js. Small viewSize => zoomed in,
 // showing only ~3-4 rows ahead.
 export const CAMERA = {
-  viewSize: 4.5,
+  viewSize: 6.5,
   distance: 11,
   height: 9,
   back: 8,      // how far behind the player (in +row lookback) the camera sits
