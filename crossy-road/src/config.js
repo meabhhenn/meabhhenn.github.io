@@ -8,41 +8,40 @@ export const HOP_DURATION = 0.13; // seconds for one hop animation
 export const HOP_HEIGHT = 0.55;   // how high the player arcs during a hop
 
 // Rows: forward direction. Row index increases as the player advances.
-export const SAFE_ROWS_AT_START = 4; // grass rows before the first swing set
+// A short grass intro, then a continuous corridor: ONE straight bar fixed at
+// BAR_LANE runs the whole way. Some rows along that lane carry a swing, some
+// don't (a mix of danger rows and free-pass rows).
+export const SAFE_ROWS_AT_START = 4; // grass rows before the corridor begins
 
-// Swing tuning (randomized per swing within these ranges).
-// Swings arc FORWARD/BACKWARD (toward/away from the player) around the X axis.
+// The single continuous bar lives at this lane for the entire corridor.
+export const BAR_LANE = 0;
+
+// Fraction of corridor rows that actually have a swing (rest are free passes).
+export const SWING_ROW_CHANCE = 0.55;
+
+// Swing tuning. Swings sweep LEFT-RIGHT across the bar's lane by rotating
+// around the Z axis. Amplitude is capped so a swing only threatens ~one lane
+// on either side and the kid never tips past ~45 degrees from vertical.
 export const SWING = {
-  minSpeed: 1.1,        // radians/sec (angular speed of the arc)
+  minSpeed: 1.1,        // radians/sec (angular speed of the sweep)
   maxSpeed: 2.4,
-  minAmplitude: 0.85,   // radians (how far the swing arcs from vertical)
-  maxAmplitude: 1.25,
+  // Reach = chainLength * sin(amp). With chainLength 2.2, amp 0.6 rad (~34 deg)
+  // reaches ~1.24 lanes: roughly one lane either side and safely under 45 deg.
+  minAmplitude: 0.42,   // radians from vertical at the peak (~24 deg, ~0.9 lane)
+  maxAmplitude: 0.6,    // radians from vertical at the peak (~34 deg, ~1.2 lane)
   chainLength: 2.2,     // length of the swing chains in world units
-
-  // Layout along the single arched bar
-  minSwings: 4,         // number of swings hanging from one bar (randomized)
-  maxSwings: 6,
-  slotSpacing: 1.35,    // world-units between adjacent hanger slots (leaves visible gaps)
-  slotHalfWidth: 0.42,  // half-width of a swing's dangerous x-slot (< half of slotSpacing => gaps are safe)
-
-  // Hazard activation: the swing is dangerous while it has arced TOWARD the
-  // player far enough that the seat overlaps the player's row. Measured as the
-  // seat's forward reach (world units) into the row from directly-below.
-  dangerReach: 0.55,    // seat must reach at least this far toward player to hit
+  seatHalfWidth: 0.45,  // half-width of the seat/kid used for X-overlap collision
 };
-
-// Row generation: chance a newly generated row is a swing-set row vs grass.
-export const SWING_ROW_CHANCE = 0.62;
 
 // Difficulty ramp: how much swing speed scales as you progress (per row).
 export const DIFFICULTY_PER_ROW = 0.004;
 export const MAX_DIFFICULTY = 1.8;
 
-// Camera framing (isometric-style follow).
-// viewSize sets how zoomed-in the orthographic camera is: smaller => closer,
-// showing fewer rows ahead. Tuned so ~3-4 rows ahead are visible.
+// Camera framing (isometric-style follow). Only viewSize is meant to be
+// tuned here; the follow logic lives in main.js. Small viewSize => zoomed in,
+// showing only ~3-4 rows ahead.
 export const CAMERA = {
-  viewSize: 8.5,
+  viewSize: 4.5,
   distance: 11,
   height: 9,
   back: 8,      // how far behind the player (in +row lookback) the camera sits
@@ -54,7 +53,7 @@ export const COLORS = {
   skyTop: 0x8fd3ff,
   grass: [0x86d46b, 0x7ac95f],   // alternating grass shades
   dirt: 0xcaa06a,
-  swingRow: [0xbfe0a0, 0xb4d894], // slightly different tint under swing sets
+  swingRow: [0xbfe0a0, 0xb4d894], // slightly different tint under the corridor lane
   frame: 0xff7a4d,               // swing set metal frame
   frameDark: 0xe45f36,
   chain: 0x556070,
