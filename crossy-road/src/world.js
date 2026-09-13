@@ -98,7 +98,7 @@ class Swing {
   // Live world X of the seat/kid. Seat local (0,-L,0) rotated about Z gives
   // x-offset = -L*sin(angle).
   worldSeatX() {
-    return BAR_X - SWING.chainLength * Math.sin(this.angle);
+    return BAR_X + SWING.chainLength * Math.sin(this.angle);
   }
 }
 
@@ -178,7 +178,7 @@ export class Row {
         const leg = new THREE.Mesh(legGeo, frameDarkMat);
         // feet planted outward in X; tops converge near the bar
         leg.position.set(BAR_X + side * 0.7, legLen / 2 - 0.4, 0);
-        leg.rotation.z = -side * 0.32; // lean inward at the top -> peaked tent
+        leg.rotation.z = side * 0.32; // lean inward at the top -> peaked tent
         leg.castShadow = true;
         return leg;
       };
