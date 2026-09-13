@@ -9,6 +9,7 @@ import {
   EMPTY_SWING_CHANCE,
   BUSH_ROW_CHANCE,
   SWING,
+  PLAYER_HALF_WIDTH,
   DIFFICULTY_PER_ROW,
   MAX_DIFFICULTY,
   COLORS,
@@ -334,7 +335,8 @@ export class World {
     if (!row) return false;
 
     for (const bar of row.bars) {
-      const hitRadius = SWING.seatHalfWidth + 0.2; // seat half-width + player half-width (minus forgiveness)
+      const halfWidth = bar.occupied ? SWING.occupiedHalfWidth : SWING.emptyHalfWidth;
+      const hitRadius = halfWidth + PLAYER_HALF_WIDTH;
       if (Math.abs(bar.worldSeatX() - playerWorldX) < hitRadius) return true;
     }
     return false;

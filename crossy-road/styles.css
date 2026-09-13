@@ -133,7 +133,7 @@ html, body {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(255, 90, 70, 0.35);
+  background: rgba(255, 40, 30, 0.55);
   pointer-events: none;
   animation: flash 0.3s ease-out;
   animation-fill-mode: forwards;

@@ -35,13 +35,21 @@ export const BUSH_ROW_CHANCE = 0.25;
 export const SWING = {
   minSpeed: 1.1,        // radians/sec (angular speed of the sweep)
   maxSpeed: 2.4,
-  // Reach = chainLength * sin(amp). Longer chains => bigger swept danger zone.
-  // Big, energetic arcs: amp 0.5 rad (~29 deg) to 1.0 rad (~57 deg).
-  minAmplitude: 0.5,    // radians from vertical at the peak (~29 deg)
-  maxAmplitude: 1.0,    // radians from vertical at the peak (~57 deg)
+  // Reach = chainLength * sin(amp). With BAR_LANES spaced 3 apart (1.5 half-gap
+  // between neighbors) and chainLength 3.4, amplitude is capped so the worst
+  // case reach (3.4 * sin(0.3) ~= 1.0) leaves a 0.5 unit buffer on each side of
+  // the midpoint between any two bars, so neighboring swings can never overlap.
+  minAmplitude: 0.18,   // radians from vertical at the peak (~10 deg)
+  maxAmplitude: 0.3,    // radians from vertical at the peak (~17 deg)
   chainLength: 3.4,     // length of the swing chains in world units (long pendulum)
-  seatHalfWidth: 0.3,   // half-width of the seat/kid used for X-overlap collision
+  // Hitbox half-widths: an empty swing's widest point is the bare seat; an
+  // occupied swing's widest point is the kid sitting on it. Not the same width.
+  occupiedHalfWidth: 0.22, // matches the kid's 0.4-wide torso
+  emptyHalfWidth: 0.33,    // matches the seat mesh's 0.62 width
 };
+
+// Matches the player's 0.62-wide torso.
+export const PLAYER_HALF_WIDTH = 0.3;
 
 // Difficulty ramp: how much swing speed scales as you progress (per row).
 export const DIFFICULTY_PER_ROW = 0.004;

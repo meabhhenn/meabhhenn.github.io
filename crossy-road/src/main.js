@@ -74,6 +74,13 @@ function updateCamera(dt, immediate = false) {
 
   camLook.set(px, 0.5, pz - CAMERA.lookAhead);
   camera.lookAt(camLook);
+
+  if (camShake.t > 0) {
+    camShake.t = Math.max(0, camShake.t - dt);
+    const s = (camShake.t / camShake.duration) * camShake.magnitude;
+    camera.position.x += (Math.random() - 0.5) * s;
+    camera.position.y += (Math.random() - 0.5) * s;
+  }
 }
 
 // ---- Input ---------------------------------------------------------------
@@ -83,6 +90,9 @@ let running = false;
 // Death knockdown animation state. When active, tick() keeps running and
 // topples the player over before showing the game-over overlay.
 const deathAnim = { active: false, t: 0, duration: 0.6 };
+
+// Quick decaying camera shake, triggered on impact.
+const camShake = { t: 0, duration: 0.25, magnitude: 0.35 };
 
 function handleMove(dLane, dRow) {
   if (!running) return;
@@ -201,6 +211,7 @@ function tick() {
       // start the knockdown; keep running so tick() animates the topple
       deathAnim.active = true;
       deathAnim.t = 0;
+      camShake.t = camShake.duration;
       playDeathReaction();
     }
 
