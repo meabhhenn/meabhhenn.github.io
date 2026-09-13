@@ -8,38 +8,29 @@ export const HOP_DURATION = 0.13; // seconds for one hop animation
 export const HOP_HEIGHT = 0.55;   // how high the player arcs during a hop
 
 // Rows: forward direction. Row index increases as the player advances.
-// A short grass intro, then a continuous corridor: ONE straight bar fixed at
-// BAR_LANE runs the whole way. Some rows along that lane carry a swing, some
-// don't (a mix of danger rows and free-pass rows).
+// A short grass intro, then a continuous corridor: THREE straight bars, each
+// fixed at its own lane, run the whole way in parallel. Some rows along each
+// bar's lane carry a swing, some don't (a mix of danger rows and free-pass rows).
 export const SAFE_ROWS_AT_START = 4; // grass rows before the corridor begins
 
-// The single continuous bar lives at this lane for the entire corridor.
-export const BAR_LANE = 0;
+// Three independent continuous bars, each running the whole corridor on its
+// own fixed lane, each rolling its own swings independently.
+export const BAR_LANES = [-3, 0, 3];
 
-// Fraction of corridor rows that get the bar structure at all. Rows without a
-// bar are plain grass. Every row that DOES get a bar also gets a swing.
+// Fraction of corridor rows that get the bar structure at all (per bar lane).
+// Rows without a bar are plain grass on that lane. Every row that DOES get a
+// bar also gets a swing.
 export const BAR_ROW_CHANCE = 0.6;
 
 // Of the rows that get a bar, the fraction whose swing is unoccupied (an empty
-// seat that hangs straight down and permanently blocks the bar's lane).
+// seat that hangs straight down and permanently blocks that bar's lane).
 export const EMPTY_SWING_CHANCE = 0.25;
 
 // Chance any given corridor row gets exactly one bush: a static, non-lethal
 // obstacle in an inner lane that the player must step around.
 export const BUSH_ROW_CHANCE = 0.25;
 
-// Soccer hazard: two kids kicking a ball back and forth between them, out in
-// the outer lanes on either side of the corridor.
-export const SOCCER = {
-  minSpeed: 1.4,
-  maxSpeed: 2.6,
-  ballRadius: 0.22,
-  kickHeight: 0.5,
-  hitRadius: 0.4,
-};
-export const SOCCER_ROW_CHANCE = 0.35;
-
-// Swing tuning. Swings sweep LEFT-RIGHT across the bar's lane by rotating
+// Swing tuning. Swings sweep LEFT-RIGHT across their bar's lane by rotating
 // around the Z axis.
 export const SWING = {
   minSpeed: 1.1,        // radians/sec (angular speed of the sweep)
@@ -72,7 +63,7 @@ export const COLORS = {
   skyTop: 0x8fd3ff,
   grass: [0x86d46b, 0x7ac95f],   // alternating grass shades
   dirt: 0xcaa06a,
-  swingRow: [0xbfe0a0, 0xb4d894], // slightly different tint under the corridor lane
+  swingRow: [0xbfe0a0, 0xb4d894], // slightly different tint under the corridor lanes
   frame: 0xff7a4d,               // swing set metal frame
   frameDark: 0xe45f36,
   chain: 0x556070,
