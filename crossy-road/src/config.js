@@ -63,8 +63,8 @@ export const MAX_DIFFICULTY = 1.8;
 export const CAMERA = {
   viewSize: 6.5,
   distance: 5,
-  height: 9,
-  back: 8,      // how far behind the player (in +row lookback) the camera sits
+  height: 15,
+  back: 10,     // how far behind the player (in +row lookback) the camera sits
   lookAhead: 1.5, // bias the look target a little ahead of the player
 };
 
