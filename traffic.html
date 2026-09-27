@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Traffic Guess Game</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: #f4f5f7; margin: 0; padding: 32px 16px; color: #1c1e21;
+    }
+    .card {
+      max-width: 640px; margin: 0 auto; background: #fff; border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 24px 28px;
+    }
+    h1 { margin: 0 0 4px; font-size: 1.5rem; }
+    .subhead { color: #6b7280; margin: 0 0 16px; font-size: 0.95rem; }
+    .map-img { width: 100%; border-radius: 8px; margin-bottom: 12px; display: block; }
+    .description { font-style: italic; color: #4b5563; margin: 0 0 16px; }
+    .info-grid { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0 0 20px; font-size: 0.95rem; }
+    .info-grid dt { font-weight: 600; color: #374151; }
+    .info-grid dd { margin: 0; }
+    .hint { color: #6b7280; font-size: 0.9rem; }
+    .guess-form { display: flex; gap: 8px; }
+    .guess-form input { flex: 1; min-width: 0; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; }
+    button { padding: 10px 18px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+    button:hover { background: #1d4ed8; }
+    button:disabled { background: #93c5fd; cursor: default; }
+    .error { color: #dc2626; margin: 8px 0; }
+    .status { color: #6b7280; margin: 8px 0; }
+    .result-line { font-size: 1.05rem; margin: 6px 0; }
+    .point-yes { color: #16a34a; font-weight: 700; }
+    .point-no { color: #6b7280; }
+    .hidden { display: none; }
+    .back { display: inline-block; margin-top: 20px; color: #6b7280; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Traffic Guess Game</h1>
+    <p class="subhead" id="subhead">Guess the average traffic speed in the Chicago Loop for a real historical hour.</p>
+
+    <p class="status" id="status">Loading…</p>
+    <p class="error hidden" id="error"></p>
+    <button id="retry" class="hidden" type="button">Try again</button>
+
+    <!-- Round view -->
+    <div id="round-view" class="hidden">
+      <img class="map-img" id="map" alt="Map of the Chicago Loop region">
+      <p class="description" id="region-desc"></p>
+      <dl class="info-grid">
+        <dt>Day</dt><dd id="day"></dd>
+        <dt>Time</dt><dd id="time"></dd>
+        <dt>Weather</dt><dd id="weather"></dd>
+      </dl>
+      <p class="hint" id="hint"></p>
+      <form class="guess-form" id="guess-form">
+        <input type="text" id="guess" placeholder="Guess avg speed (mph)" autocomplete="off">
+        <button type="submit" id="submit">Submit</button>
+      </form>
+    </div>
+
+    <!-- Reveal view -->
+    <div id="reveal-view" class="hidden">
+      <p class="result-line">You guessed: <strong id="r-guess"></strong></p>
+      <p class="result-line">Actual recorded: <strong id="r-actual"></strong></p>
+      <p class="result-line">Difference: <span id="r-diff"></span></p>
+      <p class="result-line" id="r-verdict"></p>
+      <p id="final" class="hidden"></p>
+      <button id="next" type="button">Next round</button>
+    </div>
+
+    <a class="back" href="index.html#projects">← back to portfolio</a>
+  </div>
+
+  <script>
+    // The only thing the frontend knows: where the backend lives. No API keys here.
+    const BACKEND_URL = "https://traffic-guess-backend.onrender.com";
+    // For local testing, swap to: const BACKEND_URL = "http://127.0.0.1:5050";
+
+    const NUM_ROUNDS = 5;
+    let roundNum = 1;
+    let score = 0;
+    let currentRoundId = null;
+    let lastAction = null;   // what the "Try again" button re-runs
+
+    const $ = (id) => document.getElementById(id);
+    const show = (id, on = true) => $(id).classList.toggle("hidden", !on);
+
+    // Wraps fetch(): adds a timeout, turns non-2xx responses into readable errors,
+    // and warns the user when Render's free tier is waking up (can take ~50s).
+    async function callBackend(path, options = {}) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 75000);
+      const slowNotice = setTimeout(() => {
+        $("status").textContent = "Waking up the server (the free tier sleeps when idle). This can take up to a minute…";
+      }, 4000);
+      try {
+        const res = await fetch(BACKEND_URL + path, { ...options, signal: controller.signal });
+        let data = null;
+        try { data = await res.json(); } catch { /* not JSON */ }
+        if (!res.ok) {
+          throw new Error((data && data.error) || `Server returned ${res.status}.`);
+        }
+        return data;
+      } catch (err) {
+        if (err.name === "AbortError") throw new Error("The server took too long to respond. Please try again.");
+        if (err instanceof TypeError) throw new Error("Couldn't reach the server. It may be down or you may be offline.");
+        throw err;
+      } finally {
+        clearTimeout(timeout);
+        clearTimeout(slowNotice);
+      }
+    }
+
+    function showError(message, retryAction) {
+      $("error").textContent = message;
+      show("error");
+      show("status", false);
+      lastAction = retryAction || null;
+      show("retry", !!retryAction);
+    }
+
+    function clearError() {
+      show("error", false);
+      show("retry", false);
+    }
+
+    function updateSubhead() {
+      $("subhead").textContent = `Round ${roundNum} of ${NUM_ROUNDS}. Score: ${score}`;
+    }
+
+    async function loadRound() {
+      clearError();
+      show("round-view", false);
+      show("reveal-view", false);
+      $("status").textContent = "Loading a round…";
+      show("status");
+      try {
+        const r = await callBackend("/api/round");
+        currentRoundId = r.round_id;
+        $("region-desc").textContent = `${r.region}: ${r.region_description}`;
+        $("day").textContent = `${r.day_name} (${r.day_type}), ${r.date}`;
+        $("time").textContent = r.time;
+        $("weather").textContent = `${r.weather.temp_f}°F, ${r.weather.precip_mm} mm precip, wind ${r.weather.wind_mph} mph`;
+        $("hint").textContent = `For reference: recorded speeds here range ${Math.round(r.speed_range.min)}–${Math.round(r.speed_range.max)} mph, averaging ${Math.round(r.speed_range.mean)} mph.`;
+        $("guess").value = "";
+        updateSubhead();
+        show("status", false);
+        show("round-view");
+        $("guess").focus();
+      } catch (err) {
+        showError(err.message, loadRound);
+      }
+    }
+
+    async function submitGuess(event) {
+      event.preventDefault();
+      clearError();
+      const raw = $("guess").value.trim();
+
+      // Quick checks in the browser; the backend validates again (never trust the client).
+      if (!raw) return showError("Please enter a number.");
+      if (isNaN(Number(raw))) return showError(`'${raw}' isn't a number. Try again.`);
+
+      $("submit").disabled = true;
+      $("status").textContent = "Checking your guess…";
+      show("status");
+      try {
+        const res = await callBackend("/api/guess", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ round_id: currentRoundId, guess: Number(raw) }),
+        });
+        score += res.points;
+        $("r-guess").textContent = `${res.guess} mph`;
+        $("r-actual").textContent = `${res.actual} mph`;
+        $("r-diff").textContent = `${res.diff} mph`;
+        const pts = res.points === 1 ? "point" : "points";
+        $("r-verdict").textContent = `${res.verdict} (+${res.points} ${pts})`;
+        $("r-verdict").className = "result-line " + (res.points > 0 ? "point-yes" : "point-no");
+        updateSubhead();
+
+        const isLast = roundNum >= NUM_ROUNDS;
+        $("final").innerHTML = `<strong>Game over!</strong> Final score: ${score} / ${NUM_ROUNDS * 3}`;
+        show("final", isLast);
+        $("next").textContent = isLast ? "Play again" : "Next round";
+
+        show("status", false);
+        show("round-view", false);
+        show("reveal-view");
+      } catch (err) {
+        showError(err.message);  // stay on the round so they can fix the guess
+      } finally {
+        $("submit").disabled = false;
+      }
+    }
+
+    function nextRound() {
+      if (roundNum >= NUM_ROUNDS) { roundNum = 1; score = 0; }
+      else { roundNum += 1; }
+      loadRound();
+    }
+
+    // The map comes from our backend, which fetches it from Mapbox with the secret token.
+    $("map").src = BACKEND_URL + "/api/map";
+    $("map").onerror = () => show("map", false);  // no map? the game still works
+
+    $("guess-form").addEventListener("submit", submitGuess);
+    $("next").addEventListener("click", nextRound);
+    $("retry").addEventListener("click", () => lastAction && lastAction());
+
+    loadRound();
+  </script>
+</body>
+</html>
